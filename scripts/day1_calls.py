@@ -39,11 +39,22 @@ def vision():
         {"type": "input_image", "image_url": data_url(CARD)}]}]}, "vision_card_read")
     print("  reply:", json.dumps(r)[:400])
 def sam():
-    # SAM 3.1 on the Model API: model id sam-3.1 through /v1/responses with the image and a text prompt (shape per the overview;
-    # the dedicated SAM page was a 404 on 2026-10-26, so the request body is the image-understanding shape until the page is read).
-    r = post("/responses", {"model": "sam-3.1", "input": [{"type": "message", "role": "user", "content": [
-        {"type": "input_text", "text": "ID card"}, {"type": "input_image", "image_url": data_url(CARD)}]}]}, "sam_card_segment")
-    print("  reply:", json.dumps(r)[:400])
+    # SAM 3.1 on the Model API (docs/media-segmentation, read 2026-10-26): model sam-3.1 through /v1/responses, one user message
+    # with an input_text noun phrase and an input_image; the docs show stream: true with the result as special-token text
+    # (one box and one mask per match) in response.output_text.delta events. First try without streaming; if the API insists,
+    # the streamed variant is the fallback and the raw event text is saved as is.
+    body = {"model": "sam-3.1", "input": [{"type": "message", "role": "user", "content": [
+        {"type": "input_text", "text": "ID card"}, {"type": "input_image", "image_url": data_url(CARD)}]}]}
+    r = post("/responses", body, "sam_card_segment")
+    if isinstance(r, dict) and r.get("http_error") in (400, 422):
+        req = urllib.request.Request(BASE + "/responses", data=json.dumps(dict(body, stream=True)).encode(), method="POST",
+                                     headers={"Authorization": "Bearer " + KEY, "Content-Type": "application/json", "Accept": "text/event-stream"})
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp: raw = resp.read().decode(errors="replace")
+        except urllib.error.HTTPError as e: raw = f"http {e.code}: " + e.read()[:1000].decode(errors="replace")
+        open(os.path.join(OUT, "sam_card_segment_stream.txt"), "w").write(raw); print("  streamed fallback saved, first 300 chars:", raw[:300].replace(chr(10), " | "))
+    else:
+        print("  reply:", json.dumps(r)[:400])
 which = sys.argv[1] if len(sys.argv) > 1 else "all"
 for name, fn in (("chat", chat), ("vision", vision), ("sam", sam)):
     if which in (name, "all"): fn()
