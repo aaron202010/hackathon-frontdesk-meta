@@ -1,0 +1,14 @@
+[Unit]
+Description=Front Desk on Meta models (hackathon demo)
+After=network.target
+
+[Service]
+WorkingDirectory=/root/hackathon-frontdesk-meta
+EnvironmentFile=/root/.creds/meta-model-api.env
+Environment=FRONTDESK_MODEL=muse-spark-1.3
+ExecStart=/usr/bin/python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8095 --proxy-headers
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

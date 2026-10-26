@@ -1,0 +1,14 @@
+http:
+  routers:
+    frontdesk:
+      rule: "Host(`frontdesk.aaroncabantugan.com`)"
+      entryPoints:
+        - websecure
+      service: frontdesk
+      tls:
+        certResolver: letsencrypt
+  services:
+    frontdesk:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:8095"
