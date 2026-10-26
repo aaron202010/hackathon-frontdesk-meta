@@ -1,0 +1,604 @@
+{
+ "_note": "fake schedule, generated",
+ "generated": "2026-10-26",
+ "days": [
+  {
+   "date": "2026-10-27",
+   "day": "tue",
+   "hours": "09:00-18:00",
+   "slots": [
+    {
+     "time": "09:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "09:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "10:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "10:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "11:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "11:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "12:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "13:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "13:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "14:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "14:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "15:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "15:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "16:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "16:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "17:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "17:30",
+     "dentist": "d2",
+     "taken": true
+    }
+   ]
+  },
+  {
+   "date": "2026-10-28",
+   "day": "wed",
+   "hours": "09:00-18:00",
+   "slots": [
+    {
+     "time": "09:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "09:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "10:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "10:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "11:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "11:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "12:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "13:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "13:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "14:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "14:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "15:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "15:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "16:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "16:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "17:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "17:30",
+     "dentist": "d1",
+     "taken": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-29",
+   "day": "thu",
+   "hours": "09:00-18:00",
+   "slots": [
+    {
+     "time": "09:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "09:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "10:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "10:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "11:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "11:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "12:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "13:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "13:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "14:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "14:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "15:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "15:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "16:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "16:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "17:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "17:30",
+     "dentist": "d2",
+     "taken": true
+    }
+   ]
+  },
+  {
+   "date": "2026-10-30",
+   "day": "fri",
+   "hours": "09:00-18:00",
+   "slots": [
+    {
+     "time": "09:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "09:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "10:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "10:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "11:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "11:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "12:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "13:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "13:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "14:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "14:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "15:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "15:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "16:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "16:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "17:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "17:30",
+     "dentist": "d1",
+     "taken": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-31",
+   "day": "sat",
+   "hours": "09:00-14:00",
+   "slots": [
+    {
+     "time": "09:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "09:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "09:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "09:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "10:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "10:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "10:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "10:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "11:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "11:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "11:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "11:30",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "12:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "12:00",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d2",
+     "taken": false
+    },
+    {
+     "time": "13:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "13:00",
+     "dentist": "d2",
+     "taken": true
+    },
+    {
+     "time": "13:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "13:30",
+     "dentist": "d2",
+     "taken": false
+    }
+   ]
+  },
+  {
+   "date": "2026-11-01",
+   "day": "sun",
+   "hours": "closed",
+   "slots": []
+  },
+  {
+   "date": "2026-11-02",
+   "day": "mon",
+   "hours": "09:00-18:00",
+   "slots": [
+    {
+     "time": "09:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "09:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "10:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "10:30",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "11:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "11:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "12:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "12:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "13:00",
+     "dentist": "d1",
+     "taken": true
+    },
+    {
+     "time": "13:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "14:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "14:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "15:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "15:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "16:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "16:30",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "17:00",
+     "dentist": "d1",
+     "taken": false
+    },
+    {
+     "time": "17:30",
+     "dentist": "d1",
+     "taken": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "endpoint": "/chat/completions",
+ "model": "muse-spark-1.3",
+ "ms": 1157,
+ "status": 404,
+ "request": {
+  "model": "muse-spark-1.3",
+  "temperature": 0.3,
+  "max_tokens": 300,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are the front desk of Bright Smile Dental Clinic in Makati. Answer in the patient's language (Taglish when they write Taglish), short, friendly. Services: cleaning starts at 1,000 pesos, extraction starts at 1,500, filling price on request. Open Mon to Sat 9 AM to 6 PM. Never give medical advice; emergencies call (02) 8123 4567."
+   },
+   {
+    "role": "user",
+    "content": "Hi po, magkano ang cleaning? Pwede ba bukas ng hapon, around 2pm?"
+   }
+  ]
+ },
+ "response": {
+  "http_error": 404,
+  "body": "{\"error\":{\"code\":\"model_not_found\",\"message\":\"The requested model was not found.\",\"param\":null,\"type\":\"invalid_request_error\"}}"
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "endpoint": "/responses",
+ "model": "sam-3.1",
+ "ms": 1317,
+ "status": 404,
+ "request": {
+  "model": "sam-3.1",
+  "input": [
+   {
+    "type": "message",
+    "role": "user",
+    "content": [
+     {
+      "type": "input_text",
+      "text": "ID card"
+     },
+     {
+      "type": "input_image",
+      "image_url": "data:image/jpeg;base64,<stripped>"
+     }
+    ]
+   }
+  ]
+ },
+ "response": {
+  "http_error": 404,
+  "body": "{\"error\":{\"code\":\"model_not_found\",\"message\":\"The requested model was not found.\",\"param\":null,\"type\":\"invalid_request_error\"}}"
+ }
+}
