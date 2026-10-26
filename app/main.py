@@ -1,12 +1,15 @@
-"""FastAPI entry: POST /chat, POST /card (day 4), GET /trace/{chat_id}, GET / (the chat page)."""
+"""FastAPI entry: POST /chat, POST /card, GET /trace/{chat_id}, GET / (the chat page)."""
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
-from app import agent, clinic
+from app import agent, card, clinic, model
 
 app = FastAPI(title="Front Desk on Meta models")
 STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+MAX_PHOTO = 10 * 1024 * 1024
+BLURRY_LINE = "Please send a clearer photo of the card, flat, in good light, or our staff can check it."
+MIN_CONFIDENCE = 0.5
 
 
 class ChatIn(BaseModel):
@@ -25,8 +28,31 @@ def chat(body: ChatIn):
 
 
 @app.post("/card")
-def card():
-    return {"status": "not built yet, day 4"}
+def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, max_length=64)):
+    """Photo in: segment, read, check the insurer against the accepted list, keep the card on the chat for the next booking."""
+    data = file.file.read(MAX_PHOTO + 1)
+    if len(data) > MAX_PHOTO:
+        raise HTTPException(413, "photo too large")
+    if agent.is_paused(chat_id):
+        return {"reply": clinic.CLINIC["guardrails"]["paused_reply"], "card": None, "hmo": None}
+    try:
+        model.CURRENT_CHAT.set(chat_id)
+        found = card.segment(data)
+        fields = card.read_card(found["crop"], hint=file.filename)
+    except ValueError:
+        raise HTTPException(400, "not an image")
+    except model.ModelError:
+        return {"reply": clinic.CLINIC["guardrails"]["model_error_reply"], "card": None, "hmo": None}
+    hmo = None
+    if fields["confidence"] < MIN_CONFIDENCE:
+        reply = BLURRY_LINE
+    else:
+        hmo = clinic.hmo_check(fields["insurer"], None)
+        card.save_card(chat_id, fields)
+        reply = card.card_reply(fields, hmo)
+    agent.save_turn(chat_id, "user", "[sent a photo of an HMO card]", "card")
+    agent.save_turn(chat_id, "assistant", reply, "card")
+    return {"reply": reply, "card": fields, "hmo": hmo}
 
 
 @app.get("/trace/{chat_id}")

@@ -131,20 +131,28 @@ def _stub_intent(t, raw, messages):
         return [], G["privacy_reply"]
     if re.search(r"09\d{2}\s?\d{3}\s?\d{4}", t) and re.search(r"\d{1,2}:\d{2}", t):
         return [("book", _booking_args(raw, messages))], None
+    if any(w in t for w in ("picture", "photo", "card", "blurry")):
+        return [], _card_ask(raw, is_taglish(raw))
     if clinic.find_hmo(t) or any(w in t for w in ("hmo", "accepted", "covered")):
         return [("hmo_check", {"name_or_alias": _hmo_name(raw), "service_id": _service_in(t) or "consult"})], None
     if any(w in t for w in ("magkano", "how much", "price", "presyo")):
         sid = _service_in(t)
         return ([("price_line", {"service_id": sid})], None) if sid else ([], clinic.price_line("unknown") + " Gusto mo ng consultation slot?")
     if any(w in t for w in ("open", "hours", "oras", "sarado", "closed")) and not any(w in t for w in ("book", "slot")):
-        return [], clinic.hours_line(_date_hint(t) or "")
+        return [], clinic.hours_line(_date_hint(t) or "") + (" Gusto mo bang mag book?" if is_taglish(raw) else "")
     if any(w in t for w in ("book", "slot", "schedule", "available", "appointment", "pwede")):
         return [("open_slots", {"date": _date_hint(t), "dentist": _dentist_hint(t), "period": _period(t)})], None
-    if any(w in t for w in ("picture", "photo", "card", "blurry")):
-        return [], "Please send a clear photo of your HMO card: flat, good light, all four corners in. Or tell me the insurer name. Staff can also help."
     if any(w in t for w in ("hi", "hello", "kumusta", "good morning")) and len(t.split()) <= 4:
         return [], "Hello po! Bright Smile Dental Clinic here. I can help with prices, hours, HMO cards and bookings. Ano po ang kailangan ninyo?"
     return [], G["off_topic_reply"]
+
+
+def _card_ask(raw, taglish):
+    """Ask for the card photo before any coverage line; name the insurer if the patient did."""
+    h = clinic.find_hmo(raw.lower())
+    seen = f"Thanks, I see {h['insurer']}. " if h else ""
+    ask = "Please send a clear photo of your HMO card: flat, good light, all four corners in. I read it first, then I tell you what it covers. Or tell me the insurer name. Staff can also help."
+    return seen + ask + (" Salamat po!" if taglish else "")
 
 
 def _hmo_name(raw):
