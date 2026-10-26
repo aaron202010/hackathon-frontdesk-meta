@@ -1,0 +1,7 @@
+.env
+.env.*
+*.key
+node_modules/
+__pycache__/
+data/private/
+*.log
