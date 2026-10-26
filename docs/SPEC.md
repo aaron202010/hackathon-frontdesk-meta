@@ -13,7 +13,7 @@ A Messenger-style front desk for a Philippine dental clinic, built on Meta model
 
 ## 3. Stack (day 1 draft, confirmed on day 2 once the API is in hand)
 - Python 3.12, FastAPI, one process; SQLite fake store; a web chat page that looks like Messenger (fallback if a test Facebook page needs app review, said plainly in the write-up).
-- Meta models through the Meta Model API or a partner endpoint (Baseten, Modal or Fireworks credits for select participants). Muse Spark for chat and card reading; SAM 3.1 for the card crop.
+- Meta Model API (read 2026-10-26 at dev.meta.ai): base https://api.meta.ai/v1, Bearer MODEL_API_KEY, OpenAI compatible (/v1/chat/completions) plus /v1/responses; chat and card reading on muse-spark-1.3 (images as base64 data URLs, jpeg or png, 50 MB, 50 images a request); card crop on the hosted sam-3.1 through /v1/responses (its dedicated docs page was a 404 on day 1, request shape to confirm with the first call). Pay as you go; the hackathon credits are the budget. No GPU needed.
 - Deploy: a live URL on day 5 (Vercel or Fly), logs and a trace per chat.
 
 ## 4. Fake data (day 2)
