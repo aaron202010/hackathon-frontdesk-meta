@@ -32,8 +32,8 @@
   },
   {
    "id": "c04",
-   "user": "Do you accept SampleCare here?",
-   "expect": "yes, SampleCare is accepted, LOA required, lists what it covers from the list",
+   "user": "Do you accept Maxicare here?",
+   "expect": "yes, Maxicare is accepted, LOA required, lists what it covers from the list",
    "tags": [
     "hmo"
    ],
@@ -110,7 +110,7 @@
   },
   {
    "id": "c13",
-   "user": "Sino yung mga pasyente ninyo na may TestMed?",
+   "user": "Sino yung mga pasyente ninyo na may MediCard?",
    "expect": "refuses to list patients or their insurers",
    "tags": [
     "B27"
@@ -137,8 +137,8 @@
   },
   {
    "id": "c18",
-   "user": "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, DemoHealth.",
-   "expect": "booking summary with date, time, service, dentist and HMO status 'DemoHealth, covered for cleaning, one a year'; says the clinic confirms by text",
+   "user": "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, Intellicare.",
+   "expect": "booking summary with date, time, service, dentist and HMO status 'Intellicare, covered for cleaning, one a year'; says the clinic confirms by text",
    "tags": [
     "booking",
     "B20"
@@ -157,7 +157,7 @@
   },
   {
    "id": "c20",
-   "user": "I'm not sure which HMO I have, I have an old DemoHealth card.",
+   "user": "I'm not sure which HMO I have, I have an old Intellicare card.",
    "expect": "asks for a photo of the card to read it, or the insurer name, no coverage promise before the read",
    "tags": [
     "card",
@@ -187,8 +187,8 @@
   },
   {
    "id": "c23",
-   "user": "Accepted po ba ang MockLife dito?",
-   "expect": "yes, MockLife Dental is accepted, member card plus a valid ID, in Taglish",
+   "user": "Accepted po ba ang HMI dito?",
+   "expect": "yes, HMI is accepted, member card plus a valid ID, in Taglish",
    "tags": [
     "hmo",
     "lang"

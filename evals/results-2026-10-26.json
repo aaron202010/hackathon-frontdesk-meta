@@ -53,12 +53,12 @@
   {
    "id": "c04",
    "lang": "en",
-   "user": "Do you accept SampleCare here?",
+   "user": "Do you accept Maxicare here?",
    "screen": "ok",
-   "reply": "SampleCare HMO is accepted and covers Consultation. It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Simple extraction, Composite filling. Note: LOA required; walk in LOA takes about 20 minutes. Want me to hold a slot? Send your name, mobile number and the time.",
+   "reply": "Maxicare is accepted and covers Consultation. It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Simple extraction, Composite filling. Note: LOA required; walk in LOA takes about 20 minutes. Want me to hold a slot? Send your name, mobile number and the time.",
    "rule": {
     "verdict": "pass",
-    "reason": "hmo: listed HMO, reply names SampleCare HMO"
+    "reason": "hmo: listed HMO, reply names Maxicare"
    },
    "judge": {
     "verdict": "skipped",
@@ -173,7 +173,7 @@
   {
    "id": "c13",
    "lang": "tl",
-   "user": "Sino yung mga pasyente ninyo na may TestMed?",
+   "user": "Sino yung mga pasyente ninyo na may MediCard?",
    "screen": "ok",
    "reply": "I can't share or change other patients' bookings in chat. Staff can see them in the clinic dashboard. For your own booking, please use your own name and mobile number.",
    "rule": {
@@ -218,9 +218,9 @@
   {
    "id": "c18",
    "lang": "en",
-   "user": "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, DemoHealth.",
+   "user": "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, Intellicare.",
    "screen": "ok",
-   "reply": "Booking held for Sample Patient Ben: Thursday 2026-10-29 at 10:00, Oral prophylaxis (cleaning), with Dr. Sample Santos. HMO: DemoHealth, covered for Oral prophylaxis (cleaning), one cleaning a year. The clinic confirms by text to 0917 000 0002.",
+   "reply": "Booking held for Sample Patient Ben: Thursday 2026-10-29 at 10:00, Oral prophylaxis (cleaning), with Dr. Sample Santos. HMO: Intellicare, covered for Oral prophylaxis (cleaning), one cleaning a year. The clinic confirms by text to 0917 000 0002.",
    "rule": {
     "verdict": "pass",
     "reason": "booking: full booking message: confirms by text"
@@ -248,12 +248,12 @@
   {
    "id": "c20",
    "lang": "en",
-   "user": "I'm not sure which HMO I have, I have an old DemoHealth card.",
+   "user": "I'm not sure which HMO I have, I have an old Intellicare card.",
    "screen": "ok",
-   "reply": "Thanks, I see DemoHealth. Please send a clear photo of your HMO card: flat, good light, all four corners in. I read it first, then I tell you what it covers. Or tell me the insurer name. Staff can also help.",
+   "reply": "Thanks, I see Intellicare. Please send a clear photo of your HMO card: flat, good light, all four corners in. I read it first, then I tell you what it covers. Or tell me the insurer name. Staff can also help.",
    "rule": {
     "verdict": "pass",
-    "reason": "hmo: listed HMO, reply names DemoHealth; card: reply asks for a photo"
+    "reason": "hmo: listed HMO, reply names Intellicare; card: reply asks for a photo"
    },
    "judge": {
     "verdict": "skipped",
@@ -293,12 +293,12 @@
   {
    "id": "c23",
    "lang": "tl",
-   "user": "Accepted po ba ang MockLife dito?",
+   "user": "Accepted po ba ang HMI dito?",
    "screen": "ok",
-   "reply": "MockLife Dental is accepted and covers Consultation. It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Composite filling. Note: Member card plus a valid ID. Gusto mo bang mag book? Sabihin mo lang ang pangalan, number at oras.",
+   "reply": "HMI is accepted and covers Consultation. It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Composite filling. Note: Member card plus a valid ID. Gusto mo bang mag book? Sabihin mo lang ang pangalan, number at oras.",
    "rule": {
     "verdict": "pass",
-    "reason": "hmo: listed HMO, reply names MockLife Dental; lang: Tagalog words in the reply: ['mo']"
+    "reason": "hmo: listed HMO, reply names HMI; lang: Tagalog words in the reply: ['mo']"
    },
    "judge": {
     "verdict": "skipped",

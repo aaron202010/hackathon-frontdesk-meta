@@ -69,7 +69,7 @@ def test_takeover_pauses_until_resume():
     assert "1,000" in say("magkano ang cleaning?", "t2")["reply"]
 
 
-BOOKING = "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, DemoHealth."
+BOOKING = "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, Intellicare."
 
 
 def test_booking_returns_a_full_summary():
@@ -79,7 +79,7 @@ def test_booking_returns_a_full_summary():
     assert clinic.slot_is_open(b["date"], b["time"], b["dentist_id"])
     assert b["date"] in reply and "10:00" in reply and "cleaning" in reply.lower()
     assert clinic.dentist(b["dentist_id"])["name"] in reply
-    assert "DemoHealth, covered for" in reply and "one cleaning a year" in reply.lower()
+    assert "Intellicare, covered for" in reply and "one cleaning a year" in reply.lower()
     assert "clinic confirms by text" in reply
 
 

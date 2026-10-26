@@ -37,16 +37,16 @@ def font(size, bold=False):
     for p in ('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf' if bold else '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',):
         if os.path.exists(p): return ImageFont.truetype(p, size)
     return ImageFont.load_default()
-colors = {'SampleCare HMO': (22, 101, 192), 'DemoHealth': (16, 128, 96), 'TestMed Plus': (140, 52, 160), 'FakeShield': (190, 90, 20), 'MockLife Dental': (30, 60, 110), 'NotListed HMO': (90, 90, 90)}
+colors = {}  # one neutral color for every card: no insurer's brand colors or logos on a demo card
 for p in C['patients']:
     # a photo of a card on a table: grey background, the card tilted slightly, so SAM has something to crop
     W, H = 1200, 900
     im = Image.new('RGB', (W, H), (210, 205, 198))
     d = ImageDraw.Draw(im)
     for y in range(0, H, 6): d.line([(0, y), (W, y)], fill=(204, 199, 192))
-    card = Image.new('RGB', (760, 480), colors.get(p['hmo'], (90, 90, 90)))
+    card = Image.new('RGB', (760, 480), (72, 84, 104))
     cd = ImageDraw.Draw(card)
-    cd.rectangle([0, 0, 760, 110], fill=tuple(max(0, c - 30) for c in colors.get(p['hmo'], (90, 90, 90))))
+    cd.rectangle([0, 0, 760, 110], fill=tuple(max(0, c - 30) for c in (72, 84, 104)))
     cd.text((28, 30), p['hmo'], font=font(44, True), fill=(255, 255, 255))
     cd.text((28, 140), 'MEMBER', font=font(22), fill=(230, 230, 230))
     cd.text((28, 168), p['name'].upper(), font=font(36, True), fill=(255, 255, 255))
@@ -55,7 +55,7 @@ for p in C['patients']:
     cd.text((420, 230), 'VALID THRU', font=font(22), fill=(230, 230, 230))
     cd.text((420, 258), '12/2027', font=font(34, True), fill=(255, 255, 255))
     cd.text((28, 330), 'PLAN: DENTAL BASIC', font=font(24), fill=(240, 240, 240))
-    cd.text((28, 410), 'SAMPLE CARD. NOT A REAL HMO. HACKATHON DEMO 2026.', font=font(20, True), fill=(255, 230, 80))
+    cd.text((28, 410), f"DEMO SAMPLE. NOT ISSUED BY {p['hmo'].upper()}. HACKATHON 2026.", font=font(20, True), fill=(255, 230, 80))
     card = card.resize((950, 600))  # the card fills about half of the photo, like a card held close to the camera
     card = card.rotate(rng.uniform(-6, 6), expand=True, fillcolor=(210, 205, 198))
     im.paste(card, ((W - card.width) // 2, (H - card.height) // 2))

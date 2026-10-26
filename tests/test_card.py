@@ -62,11 +62,11 @@ def test_unknown_image_has_low_confidence():
 
 
 def test_card_photo_names_the_insurer_and_sets_the_chat_hmo():
-    path = next(p for p in CARDS if "demohealth" in p)
+    path = next(p for p in CARDS if "intellicare" in p)
     out = post_card(open(path, "rb").read(), "c1", os.path.basename(path)).json()
-    assert "DemoHealth" in out["reply"] and out["hmo"]["accepted"] is True and out["card"]["member_id"] == "DH-000002"
+    assert "Intellicare" in out["reply"] and out["hmo"]["accepted"] is True and out["card"]["member_id"] == "IC-000002"
     assert "One cleaning a year" in out["reply"]
-    assert card.saved_card("c1")["insurer"] == "DemoHealth"
+    assert card.saved_card("c1")["insurer"] == "Intellicare"
 
 
 def test_unlisted_card_gets_no_coverage_promise():
@@ -87,11 +87,11 @@ def test_not_an_image_is_a_400():
 
 
 def test_booking_after_a_card_carries_the_hmo():
-    path = next(p for p in CARDS if "demohealth" in p)
+    path = next(p for p in CARDS if "intellicare" in p)
     post_card(open(path, "rb").read(), "c5")
     out = client.post("/chat", json={"chat_id": "c5", "text": "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning."}).json()
-    assert out["booking"]["hmo"] == "DemoHealth"
-    assert "HMO: DemoHealth, covered for" in out["reply"] and "clinic confirms by text" in out["reply"]
+    assert out["booking"]["hmo"] == "Intellicare"
+    assert "HMO: Intellicare, covered for" in out["reply"] and "clinic confirms by text" in out["reply"]
 
 
 def test_booking_without_a_card_stays_cash():
