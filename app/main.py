@@ -43,7 +43,7 @@ def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, m
         raise HTTPException(400, "not an image")
     except model.ModelError:
         return {"reply": clinic.CLINIC["guardrails"]["model_error_reply"], "card": None, "hmo": None}
-    hmo = None
+    hmo, box = None, found.get("box")
     if fields["confidence"] < MIN_CONFIDENCE:
         reply = BLURRY_LINE
     else:
@@ -52,7 +52,7 @@ def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, m
         reply = card.card_reply(fields, hmo)
     agent.save_turn(chat_id, "user", "[sent a photo of an HMO card]", "card")
     agent.save_turn(chat_id, "assistant", reply, "card")
-    return {"reply": reply, "card": fields, "hmo": hmo}
+    return {"reply": reply, "card": fields, "hmo": hmo, "box": box}
 
 
 @app.get("/trace/{chat_id}")
