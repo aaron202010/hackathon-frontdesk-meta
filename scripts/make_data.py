@@ -56,6 +56,7 @@ for p in C['patients']:
     cd.text((420, 258), '12/2027', font=font(34, True), fill=(255, 255, 255))
     cd.text((28, 330), 'PLAN: DENTAL BASIC', font=font(24), fill=(240, 240, 240))
     cd.text((28, 410), 'SAMPLE CARD. NOT A REAL HMO. HACKATHON DEMO 2026.', font=font(20, True), fill=(255, 230, 80))
+    card = card.resize((950, 600))  # the card fills about half of the photo, like a card held close to the camera
     card = card.rotate(rng.uniform(-6, 6), expand=True, fillcolor=(210, 205, 198))
     im.paste(card, ((W - card.width) // 2, (H - card.height) // 2))
     d = ImageDraw.Draw(im)

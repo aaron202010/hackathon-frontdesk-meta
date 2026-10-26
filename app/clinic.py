@@ -23,6 +23,8 @@ def connect():
         CREATE TABLE IF NOT EXISTS turns (
             id INTEGER PRIMARY KEY, chat_id TEXT, role TEXT, content TEXT, screen TEXT, ms INTEGER, ts TEXT);
         CREATE TABLE IF NOT EXISTS chats (chat_id TEXT PRIMARY KEY, paused INTEGER DEFAULT 0);
+        CREATE TABLE IF NOT EXISTS cards (
+            chat_id TEXT PRIMARY KEY, insurer TEXT, member_name TEXT, member_id TEXT, valid_thru TEXT, confidence REAL, ts TEXT);
     """)
     return con
 

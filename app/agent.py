@@ -1,6 +1,6 @@
 """The chat loop: screen, then the model with the clinic facts and four tools, tool results read back into the reply."""
 import datetime, json
-from app import clinic, guard, model
+from app import card, clinic, guard, model
 
 G = clinic.CLINIC["guardrails"]
 HISTORY_TURNS = 10
@@ -48,7 +48,8 @@ def run_tool(name, args):
         if name == "price_line":
             return clinic.price_line(args.get("service_id", "")), None
         if name == "book":
-            b = clinic.book(args["name"], args["mobile"], args["service_id"], args["date"], args["time"], args["dentist_id"], args.get("hmo"))
+            hmo = args.get("hmo") or (card.saved_card(model.CURRENT_CHAT.get()) or {}).get("insurer")  # the HMO from the card photo
+            b = clinic.book(args["name"], args["mobile"], args["service_id"], args["date"], args["time"], args["dentist_id"], hmo)
             return clinic.booking_summary(b), b
     except (ValueError, KeyError) as e:
         return f"Could not do that: {e}. Offer another open slot from open_slots.", None
