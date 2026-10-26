@@ -11,12 +11,12 @@ Source: the chat lane's plan of 2026-10-26 (/root/creative-out/chat-lane/hackath
 6. Bonus prizes we can aim at without extra build: best agentic use case (5k), best build on Meta open weights (Muse Spark), community vote (project gallery, Nov 16), most viral (one post on X, link in the form).
 
 ## Days (PHT)
-1. Tue Oct 27 (today): credit forms (Meta, Modal, Fireworks). Key into /root/.creds/meta-model-api.env, "key in". Three test calls: Muse Spark chat in Taglish, a vision call on a sample HMO card, SAM 3.1 crop. Ten Taglish test chats to judge Muse Spark's Taglish. Read the submission form on the event page and copy its fields into docs/SUBMISSION.md.
+1. Tue Oct 27 (today): credit forms (Meta, Modal, Fireworks). Key into /root/.creds/meta-model-api.env, "key in". Three test calls: Muse Spark chat, a vision call on a sample HMO card, SAM 3.1 crop. Ten test chats, English, plus five Taglish to check the language mirror (Aaron 2026-10-27: the hackathon is in English, the demo runs in English, the bot mirrors the patient's language). Read the submission form on the event page and copy its fields into docs/SUBMISSION.md.
 2. Wed Oct 28: Meta engineering workshop part 1 at 00:00 PHT (noon ET Tuesday). Office hours question: sole proprietorship on the startup track. Fake clinic data: schedule, services, price ranges, accepted HMO list, 6 sample HMO cards marked SAMPLE.
-3. Thu Oct 29: workshop part 2 at 00:00 PHT. Chat loop: webhook, Muse Spark replies in Taglish, slot offer from the schedule, booking written to the fake calendar.
+3. Thu Oct 29: workshop part 2 at 00:00 PHT. Chat loop: webhook, Muse Spark replies in the patient's language (English by default), slot offer from the schedule, booking written to the fake calendar.
 4. Fri Oct 30: HMO card flow: SAM 3.1 crop, field read, coverage check against the accepted list. Fireworks workshop (time on the event page).
 5. Sat Oct 31: guardrails: no diagnosis, no treatment advice, emergency gets the clinic number, staff takeover; error handling for a failed model call, a blurry card, an unknown HMO; logs and a trace per chat.
-6. Sun Nov 1: live URL (not localhost). Eval set of 20 Taglish chats with a pass rate in the README. Reply time measured and shown. US clocks change today: ET becomes UTC minus 5.
+6. Sun Nov 1: live URL (not localhost). Eval set of 20 chats (15 English, 5 Taglish) with a pass rate in the README. Reply time measured and shown. US clocks change today: ET becomes UTC minus 5.
 7. Mon Nov 2: video day 1: script, screen recording on a phone of one real chat start to booking plus the refusal and handoff, under 3 minutes.
 8. Tue Nov 3: video day 2: voiceover, captions, cut, one review pass, upload. Write-up, README, architecture diagram.
 9. Wed Nov 4: submit by 22:00 PHT (form, public repo, video, the X post link for the viral prize, the bonus prize boxes). Buffer for breakage.
@@ -25,6 +25,6 @@ Source: the chat lane's plan of 2026-10-26 (/root/creative-out/chat-lane/hackath
 New repo, fake data only, no HeyDenta code, keys, prompts or patient data. No clinic users or results claimed in the write-up. Every spoken line in the video is ours. The checks table at /root/.claude/os/checks/CHECKS-hackathon-meta-day1-2026-10-26.md grows one table per day.
 
 ## What would prove this plan wrong
-1. Muse Spark is weak at Taglish: the 10 test chats on day 1 decide; fallback is English with Taglish greetings only.
+1. Muse Spark mirrors Taglish badly: the 5 Taglish chats decide; fallback is English only with one Taglish greeting line.
 2. The sole proprietorship does not qualify for the startup track: the office hours answer on day 2 decides; fallback is the indie track with the same build.
 3. Credits arrive late (batches): day 1 test calls wait; the fake data and the chat loop scaffold go first.
