@@ -5,6 +5,11 @@ clinic's own facts, reads a photo of their HMO card, checks it against the clini
 clinic's schedule and books the visit. A voice
 note works the same way. Medical questions never reach the model: they go to the dentist. Staff can take over any chat.
 
+Why it matters: the Philippines has 2.6 dentists for every 10,000 people (WHO oral health profile, 2020 data), and WHO
+estimates that 3 in 10 people aged 5 and up have untreated tooth decay. Patients reach clinics on Facebook and Messenger, which
+reach 95.8 million and 65.8 million people here (Meta ad reach, late 2025, via DataReportal). A dentist's time is scarce; the
+front desk should not be closed when patients ask.
+
 Try it: **https://frontdesk.aaroncabantugan.com** (sample clinic, fake data). Ask "Do you accept Maxicare? I need a cleaning",
 send a sample card from [data/cards/](data/cards/), tap the mic and ask by voice, or ask "what medicine can I take?" to see the
 guard. The panel on the right shows every step the agent took, with real timings.
