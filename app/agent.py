@@ -51,6 +51,19 @@ def system_prompt(taglish):
     return "\n".join(lines)
 
 
+TOOL_LABEL = {"open_slots": "Checked open slots", "hmo_check": "Checked HMO coverage", "price_line": "Looked up the price list",
+              "book": "Held the booking"}
+SCREEN_LABEL = {"ok": "Screened the message: safe for the model", "emergency": "Emergency words: fixed safety reply, model not called",
+                "clinical": "Medical question: fixed reply, model not called", "injection": "Prompt injection: fixed reply, model not called",
+                "takeover": "Staff took over: assistant paused", "paused": "Staff is handling this chat: assistant stays quiet",
+                "resume": "Staff handed the chat back"}
+
+
+def step(steps, label, detail="", ms=None):
+    """One line for the page's agent panel: what the agent did on this message (2026-10-28)."""
+    steps.append({"label": label, "detail": detail[:160], "ms": ms})
+
+
 def run_tool(name, args):
     """-> (text for the model, booking dict or None)."""
     try:
@@ -95,42 +108,50 @@ def is_paused(chat_id):
 
 
 def handle(chat_id, text):
-    """One turn. -> {"reply", "screen", "booking"?}."""
+    """One turn. -> {"reply", "screen", "steps", "booking"?}."""
     model.CURRENT_CHAT.set(chat_id)
     kind = guard.screen(text)
     save_turn(chat_id, "user", text, kind)
+    steps = []
     if text.strip().lower().startswith(G["resume_command"]):
         set_paused(chat_id, False)
-        return finish(chat_id, G["resume_reply"], "resume")
+        step(steps, SCREEN_LABEL["resume"])
+        return finish(chat_id, G["resume_reply"], "resume", steps=steps)
     if kind == "takeover":
         set_paused(chat_id, True)
-        return finish(chat_id, G["takeover_reply"], kind)
+        step(steps, SCREEN_LABEL["takeover"])
+        return finish(chat_id, G["takeover_reply"], kind, steps=steps)
     if is_paused(chat_id):
-        return finish(chat_id, G["paused_reply"], "paused")
+        step(steps, SCREEN_LABEL["paused"])
+        return finish(chat_id, G["paused_reply"], "paused", steps=steps)
+    step(steps, SCREEN_LABEL.get(kind, kind))
     if kind != "ok":
-        return finish(chat_id, guard.reply_for(kind), kind)
-    reply, booking, ms = model_turn(chat_id, text)
-    return finish(chat_id, reply, kind, ms, booking)
+        return finish(chat_id, guard.reply_for(kind), kind, steps=steps)
+    reply, booking, ms = model_turn(chat_id, text, steps)
+    return finish(chat_id, reply, kind, ms, booking, steps)
 
 
-def finish(chat_id, reply, kind, ms=0, booking=None):
+def finish(chat_id, reply, kind, ms=0, booking=None, steps=None):
     save_turn(chat_id, "assistant", reply, kind, ms)
-    out = {"reply": reply, "screen": kind}
+    out = {"reply": reply, "screen": kind, "steps": steps or []}
     if booking:
         out["booking"] = booking
     return out
 
 
-def model_turn(chat_id, text):
+def model_turn(chat_id, text, steps=None):
     """Model call with tool rounds; a failed call gets the honest line plus the staff handoff."""
     messages = [{"role": "system", "content": system_prompt(guard.is_taglish(text))}] + history(chat_id)[:-1] + [{"role": "user", "content": text}]
     booking, ms = None, 0
+    steps = steps if steps is not None else []
     for _ in range(MAX_TOOL_ROUNDS):
         try:
             r = model.complete(messages, tools=TOOLS)
         except model.ModelError:
             return G["model_error_reply"], None, ms
         ms += r["ms"]
+        who = model.model_id() if r["mode"] == "live" else "stub model"
+        step(steps, f"{who} {'answered' if not r['tool_calls'] else 'chose ' + ', '.join(c['name'] for c in r['tool_calls'])}", "", r["ms"])
         if not r["tool_calls"]:
             return r["content"] or G["model_error_reply"], booking, ms
         messages.append({"role": "assistant", "content": r["content"], "tool_calls": [
@@ -138,5 +159,7 @@ def model_turn(chat_id, text):
         for c in r["tool_calls"]:
             result, b = run_tool(c["name"], c["arguments"])
             booking = b or booking
+            args = ", ".join(f"{k} {v}" for k, v in c["arguments"].items() if k not in ("name", "mobile"))
+            step(steps, TOOL_LABEL.get(c["name"], c["name"]) + (f" ({args})" if args else ""), result)
             messages.append({"role": "tool", "tool_call_id": c["id"], "name": c["name"], "content": result})
     return G["model_error_reply"], booking, ms

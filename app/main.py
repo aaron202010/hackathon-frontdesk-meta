@@ -1,5 +1,5 @@
 """FastAPI entry: POST /chat, POST /card, GET /trace/{chat_id}, GET / (the chat page)."""
-import os
+import os, time
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
@@ -35,24 +35,31 @@ def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, m
         raise HTTPException(413, "photo too large")
     if agent.is_paused(chat_id):
         return {"reply": clinic.CLINIC["guardrails"]["paused_reply"], "card": None, "hmo": None}
+    steps = []
     try:
         model.CURRENT_CHAT.set(chat_id)
+        t0 = time.time()
         found = card.segment(data)
+        agent.step(steps, "SAM 3.1 found the card in the photo" if found.get("box") else "Card not found, using the whole photo", "", int((time.time() - t0) * 1000))
+        t0 = time.time()
         fields = card.read_card(found["crop"], hint=file.filename)
+        agent.step(steps, f"{model.model_id()} read the card fields", f"insurer {fields.get('insurer')}, confidence {fields.get('confidence')}", int((time.time() - t0) * 1000))
     except ValueError:
         raise HTTPException(400, "not an image")
     except model.ModelError:
         return {"reply": clinic.CLINIC["guardrails"]["model_error_reply"], "card": None, "hmo": None}
     hmo, box = None, found.get("box")
     if fields["confidence"] < MIN_CONFIDENCE:
+        agent.step(steps, "Card too unclear to trust: asked for a clearer photo")
         reply = BLURRY_LINE
     else:
         hmo = clinic.hmo_check(fields["insurer"], None)
+        agent.step(steps, "Checked HMO coverage", hmo.get("line", ""))
         card.save_card(chat_id, fields)
         reply = card.card_reply(fields, hmo)
     agent.save_turn(chat_id, "user", "[sent a photo of an HMO card]", "card")
     agent.save_turn(chat_id, "assistant", reply, "card")
-    return {"reply": reply, "card": fields, "hmo": hmo, "box": box}
+    return {"reply": reply, "card": fields, "hmo": hmo, "box": box, "steps": steps}
 
 
 @app.get("/trace/{chat_id}")
