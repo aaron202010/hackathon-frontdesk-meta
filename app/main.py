@@ -1,6 +1,6 @@
 """FastAPI entry: POST /chat, POST /card, POST /voice, GET /trace/{chat_id}, GET / (the chat page), GET /staff and /staff/data (read only, behind a key)."""
-import os, time
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+import collections, os, threading, time
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 from app import agent, card, clinic, model, staff, voice
@@ -14,6 +14,28 @@ MAX_AUDIO = 10 * 1024 * 1024
 NOT_HEARD_LINE = "Sorry, I couldn't hear that. Please send the voice note again or type your message."
 
 
+# A cap per visitor on the calls that spend model credits (2026-10-28: the demo is public until judging on Nov 9 and the
+# gallery vote on Nov 16). FRONTDESK_RATE calls per 10 minutes per client IP; 0 turns it off. Off in stub mode unless set.
+RATE_WINDOW = 600
+BUSY_LINE = "Lots of messages from you in a short time. Please wait a few minutes, or call the clinic."
+_hits, _hits_lock = collections.defaultdict(collections.deque), threading.Lock()
+
+
+def rate_limit(request: Request):
+    default = "0" if model.stub_mode() else "40"
+    limit = int(os.environ.get("FRONTDESK_RATE", default) or 0)
+    if limit <= 0:
+        return
+    ip, now = (request.client.host if request.client else "unknown"), time.time()
+    with _hits_lock:
+        q = _hits[ip]
+        while q and q[0] < now - RATE_WINDOW:
+            q.popleft()
+        if len(q) >= limit:
+            raise HTTPException(429, detail=BUSY_LINE)
+        q.append(now)
+
+
 class ChatIn(BaseModel):
     chat_id: str = Field(min_length=1, max_length=64)
     text: str = Field(min_length=1, max_length=2000)
@@ -24,12 +46,12 @@ def index():
     return FileResponse(os.path.join(STATIC, "index.html"))
 
 
-@app.post("/chat")
+@app.post("/chat", dependencies=[Depends(rate_limit)])
 def chat(body: ChatIn):
     return agent.handle(body.chat_id, body.text)
 
 
-@app.post("/card")
+@app.post("/card", dependencies=[Depends(rate_limit)])
 def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, max_length=64)):
     """Photo in: segment, read, check the insurer against the accepted list, keep the card on the chat for the next booking."""
     data = file.file.read(MAX_PHOTO + 1)
@@ -64,7 +86,7 @@ def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, m
     return {"reply": reply, "card": fields, "hmo": hmo, "box": box, "steps": steps}
 
 
-@app.post("/voice")
+@app.post("/voice", dependencies=[Depends(rate_limit)])
 def voice_note(file: UploadFile = File(...), chat_id: str = Form(min_length=1, max_length=64)):
     """Voice note in: Meta's speech to text, then the same turn as a typed message (same screen, tools and steps)."""
     data = file.file.read(MAX_AUDIO + 1)

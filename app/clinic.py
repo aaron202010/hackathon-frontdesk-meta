@@ -1,11 +1,44 @@
-"""Clinic facts, schedule and the fake booking store. Everything comes from data/clinic.json and data/schedule.json."""
-import json, os, sqlite3, datetime
+"""Clinic facts, schedule and the fake booking store. Facts come from data/clinic.json; the schedule is the next seven days,
+built from the clinic hours."""
+import json, os, random, sqlite3, datetime
 from zoneinfo import ZoneInfo
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLINIC = json.load(open(os.path.join(ROOT, "data", "clinic.json")))
-SCHEDULE = json.load(open(os.path.join(ROOT, "data", "schedule.json")))
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+
+def build_week(start):
+    """Seven days of slots from the clinic hours, the same way scripts/make_data.py builds them. The taken pattern is seeded per
+    date, so a day keeps the same open slots across restarts and as the week rolls forward."""
+    cfg, days = CLINIC["schedule"], []
+    for i in range(7):
+        d = start + datetime.timedelta(days=i)
+        key, rng = DAYS[d.weekday()], random.Random(f"{cfg['seed']}-{d.isoformat()}")
+        hours, slots = CLINIC["clinic"]["hours"][key], []
+        if hours != "closed":
+            h0, h1 = hours.split("-")
+            t = datetime.datetime.combine(d, datetime.time(int(h0[:2]), int(h0[3:])))
+            end = datetime.datetime.combine(d, datetime.time(int(h1[:2]), int(h1[3:])))
+            dentists = [x for x in CLINIC["clinic"]["dentists"] if key in x["days"]]
+            while t < end:
+                slots += [{"time": t.strftime("%H:%M"), "dentist": x["id"], "taken": rng.random() < cfg["taken_ratio"]} for x in dentists]
+                t += datetime.timedelta(minutes=cfg["slot_minutes"])
+        days.append({"date": d.isoformat(), "day": key, "hours": hours, "slots": slots})
+    return days
+
+
+class _RollingSchedule(dict):
+    """SCHEDULE["days"] is always the seven days from today in Manila (2026-10-28: a fixed file ran out on Nov 3, before judging)."""
+    def __getitem__(self, k):
+        if k == "days":
+            today = now_manila().date()
+            if self.get("start") != today:
+                self.update(start=today, days=build_week(today))
+        return dict.__getitem__(self, k)
+
+
+SCHEDULE = _RollingSchedule()
 DAY_NAMES = {"mon": "Monday", "tue": "Tuesday", "wed": "Wednesday", "thu": "Thursday", "fri": "Friday", "sat": "Saturday", "sun": "Sunday"}
 TAGALOG_DAYS = {"lunes": "mon", "martes": "tue", "miyerkules": "wed", "huwebes": "thu", "biyernes": "fri", "sabado": "sat", "linggo": "sun"}
 

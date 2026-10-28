@@ -129,3 +129,14 @@ def test_tagalog_service_name_only_for_taglish_patients():
     # 2026-10-28: the English demo showed "Oral prophylaxis (cleaning) (Linis ng ngipin)"
     s = clinic.services()[0]
     assert s["tl"] not in clinic.price_line(s["id"]) and s["tl"] in clinic.price_line(s["id"], taglish=True)
+
+
+def test_the_schedule_rolls_forward_with_the_clinic_clock(monkeypatch):
+    # 2026-10-28: the fixed week ended Nov 3, before judging on Nov 9; the week now starts on the clinic's today
+    later = datetime.datetime(2026, 11, 9, 8, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=8)))
+    monkeypatch.setattr(clinic, "now_manila", lambda: later)
+    days = clinic.SCHEDULE["days"]
+    assert days[0]["date"] == "2026-11-09" and len(days) == 7
+    assert clinic.open_slots(limit=3), "a week from a later date still has open slots"
+    again = clinic.build_week(datetime.date(2026, 11, 9))
+    assert again[0]["slots"] == days[0]["slots"], "the same date gives the same slots"

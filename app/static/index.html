@@ -205,7 +205,7 @@
       const t0 = performance.now();
       const r = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: chatId, text }) });
       const j = await r.json();
-      add(j.reply || "(no reply)", "bot");
+      add(j.reply || j.detail || "(no reply)", "bot");
       addSteps(quiet ? "Staff pressed takeover" : "You: " + text, j.steps, performance.now() - t0);
       if (j.screen !== "ok") add(SCREEN_NOTE[j.screen] || j.screen, "sys");
     } catch (e) { add("Could not reach the server.", "sys"); }
