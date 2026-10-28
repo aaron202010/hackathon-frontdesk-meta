@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Bright Smile Dental Clinic · Staff view</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #eef0f4; --surface: #ffffff; --panel: #f8f9fb; --line: #e3e6eb; --line-strong: #d3d7de;
+    --ink: #111418; --ink-2: #3d434c; --muted: #66707c;
+    --blue: #0866ff; --blue-ink: #ffffff; --blue-soft: #e8f0ff;
+    --bubble: #f0f2f5; --guard: #0f7b4b; --guard-soft: #e4f5ec; --model: #0866ff; --tool: #6b4fd8; --tool-soft: #efeafd;
+    --alert: #c4321b;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.45 Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #cfe0ff; color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  * { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: var(--blue-ink); display: grid; place-items: center; font-weight: 700; font-size: 14px; letter-spacing: .02em; flex-shrink: 0; }
+  .who { min-width: 0; }
+  .nw { white-space: nowrap; }
+  h1 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.25; }
+  .sub { font-size: 12.5px; color: var(--muted); }
+
+  .notice { padding: 10px 14px; border: 1px solid var(--alert); border-radius: 12px; background: var(--surface); color: var(--alert); font-size: 13.5px; }
+
+  .sec-head { display: flex; align-items: baseline; gap: 10px; margin: 4px 2px 8px; }
+  h2 { margin: 0; font-size: 15px; font-weight: 600; }
+  .hint { font-size: 12.5px; color: var(--muted); }
+
+  .counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .count { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .count .n { font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .count.alert .n { color: var(--alert); }
+  .count .l { display: flex; align-items: flex-start; gap: 7px; margin-top: 7px; font-size: 12.5px; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .dot.blue { background: var(--blue); } .dot.guard { background: var(--guard); } .dot.tool { background: var(--tool); } .dot.alert { background: var(--alert); }
+
+  .card { overflow: hidden; }
+  .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 14px 18px 12px; border-bottom: 1px solid var(--line); }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; background: var(--bubble); color: var(--ink-2); font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pill.hmo { background: var(--blue-soft); color: var(--blue); }
+  .empty { margin: 0; padding: 28px 18px; text-align: center; color: var(--muted); font-size: 13.5px; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 9px 18px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--panel); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 11px 18px; border-top: 1px solid var(--line); vertical-align: baseline; overflow-wrap: break-word; }
+  tbody tr:first-child td { border-top: none; }
+  .when .tm { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .when { white-space: nowrap; }
+  .when .dt { display: block; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mono { font: 500 12.5px/1.5 "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  td.mobile { white-space: nowrap; color: var(--ink-2); }
+
+  .chat { padding: 14px 18px 16px; border-top: 1px solid var(--line); }
+  .chat:first-child { border-top: none; }
+  .chat-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; }
+  .chat-head .id { font: 500 13px "JetBrains Mono", ui-monospace, monospace; }
+  .chat-head .pill { background: var(--blue-soft); color: var(--blue); }
+  .chat-head .meta { font-size: 12.5px; color: var(--muted); }
+  .lines { margin-top: 10px; padding: 6px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .line { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; column-gap: 10px; align-items: baseline; padding: 5px 0; font-size: 13.5px; }
+  .line + .line { border-top: 1px solid var(--line); }
+  .line .role { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .line .txt { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .line .ts { font: 500 11.5px/1.4 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  footer { padding: 2px 2px 8px; font-size: 12.5px; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 12px; gap: 12px; }
+    header { padding: 10px 12px; gap: 10px; }
+    .avatar { width: 34px; height: 34px; font-size: 12px; }
+    h1 { font-size: 14px; }
+    .card-head { padding: 12px 14px 10px; }
+    .count { padding: 12px 14px; }
+    .count .n { font-size: 24px; }
+    table, tbody { display: block; }
+    thead { display: none; }
+    tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "when hmo" "name mobile" "svc dentist"; gap: 3px 12px; padding: 12px 14px; border-top: 1px solid var(--line); }
+    tbody tr:first-child { border-top: none; }
+    td { display: block; padding: 0; border: none; min-width: 0; }
+    td.when { grid-area: when; } td.hmo { grid-area: hmo; text-align: right; } td.name { grid-area: name; font-weight: 500; }
+    td.mobile { grid-area: mobile; text-align: right; } td.svc { grid-area: svc; color: var(--ink-2); font-size: 13.5px; } td.dentist { grid-area: dentist; text-align: right; color: var(--ink-2); font-size: 13.5px; }
+    .when .dt { display: inline; margin-left: 8px; }
+    .chat { padding: 12px 14px 14px; }
+    .line { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "role ts" "txt txt"; row-gap: 1px; padding: 7px 0; }
+    .line .role { grid-area: role; } .line .ts { grid-area: ts; } .line .txt { grid-area: txt; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="box">
+    <div class="avatar" aria-hidden="true">BS</div>
+    <div class="who"><h1><span class="nw">Bright Smile Dental Clinic ·</span> <span class="nw">Staff view (read only)</span></h1><div class="sub" id="stamp">Sample clinic · fake data only</div></div>
+  </header>
+
+  <div class="notice" id="notice" role="status" hidden></div>
+
+  <section aria-labelledby="h-today">
+    <div class="sec-head"><h2 id="h-today">Today</h2><span class="hint" id="todayDate"></span></div>
+    <div class="counts">
+      <div class="count"><div class="n" data-k="chats_started">–</div><div class="l"><i class="dot blue"></i>Chats started</div></div>
+      <div class="count"><div class="n" data-k="bookings_made">–</div><div class="l"><i class="dot blue"></i>Bookings made</div></div>
+      <div class="count"><div class="n" data-k="medical_questions">–</div><div class="l"><i class="dot guard"></i>Medical questions</div></div>
+      <div class="count" id="emergencyCard"><div class="n" data-k="emergencies">–</div><div class="l"><i class="dot alert"></i>Emergencies</div></div>
+      <div class="count"><div class="n" data-k="rule_change_attempts">–</div><div class="l"><i class="dot guard"></i>Rule change attempts</div></div>
+      <div class="count"><div class="n" data-k="card_photos">–</div><div class="l"><i class="dot tool"></i>Card photos read</div></div>
+    </div>
+  </section>
+
+  <section class="box card" aria-labelledby="h-bookings">
+    <div class="card-head"><h2 id="h-bookings">Upcoming bookings</h2><span class="pill" id="bookingCount">0</span></div>
+    <table id="bookingTable" aria-labelledby="h-bookings" hidden>
+      <thead><tr><th scope="col">When</th><th scope="col">Patient</th><th scope="col">Mobile</th><th scope="col">Service</th><th scope="col">Dentist</th><th scope="col">HMO</th></tr></thead>
+      <tbody id="bookingRows"></tbody>
+    </table>
+    <p class="empty" id="bookingEmpty">No upcoming bookings yet.</p>
+  </section>
+
+  <section class="box card" aria-labelledby="h-takeovers">
+    <div class="card-head"><h2 id="h-takeovers">Taken over by staff</h2><span class="pill" id="takeoverCount">0</span></div>
+    <div id="takeoverList"></div>
+    <p class="empty" id="takeoverEmpty">No chats are taken over right now.</p>
+  </section>
+
+  <footer>Read only. Refreshes every 30 seconds. Times are Manila time. Mobile numbers show the last 4 digits.</footer>
+</div>
+<script>
+  const KEY = new URLSearchParams(location.search).get("key") || "";
+  const $ = id => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const MANILA = { timeZone: "Asia/Manila" };
+  const fmtClock = new Intl.DateTimeFormat("en-US", { ...MANILA, hour: "numeric", minute: "2-digit" });
+  const fmtStamp = new Intl.DateTimeFormat("en-US", { ...MANILA, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  const fmtLong = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const clock = iso => iso ? fmtClock.format(new Date(iso)) : "";
+  const stamp = iso => iso ? fmtStamp.format(new Date(iso)) : "";
+  const plural = (n, one, many) => n + " " + (n === 1 ? one : many);
+
+  function renderCounts(t) {
+    document.querySelectorAll("[data-k]").forEach(n => { n.textContent = t[n.dataset.k] ?? "–"; });
+    $("emergencyCard").classList.toggle("alert", t.emergencies > 0);
+    $("todayDate").textContent = t.date ? fmtLong.format(new Date(t.date + "T00:00:00Z")) : "";
+  }
+
+  function renderBookings(list) {
+    $("bookingCount").textContent = list.length;
+    $("bookingTable").hidden = !list.length;
+    $("bookingEmpty").hidden = !!list.length;
+    $("bookingRows").replaceChildren(...list.map(b => {
+      const tr = document.createElement("tr");
+      const when = el("td", "when"); when.append(el("span", "tm", b.time), el("span", "dt", b.weekday.slice(0, 3) + " " + b.date));
+      const hmo = el("td", "hmo"); hmo.append(el("span", b.hmo === "cash" ? "pill" : "pill hmo", b.hmo));
+      tr.append(when, el("td", "name", b.name), el("td", "mobile mono", b.mobile), el("td", "svc", b.service), el("td", "dentist", b.dentist), hmo);
+      return tr;
+    }));
+  }
+
+  function renderTakeovers(list) {
+    $("takeoverCount").textContent = list.length;
+    $("takeoverEmpty").hidden = !!list.length;
+    $("takeoverList").replaceChildren(...list.map(c => {
+      const box = el("div", "chat"), head = el("div", "chat-head");
+      head.append(el("span", "id", c.chat_id), el("span", "pill", "Staff handling"),
+        el("span", "meta", (c.taken_over_at ? "Taken over " + stamp(c.taken_over_at) + " · " : "") + plural(c.turns, "turn", "turns")));
+      const lines = el("div", "lines");
+      c.last_turns.forEach(t => {
+        const row = el("div", "line");
+        row.append(el("span", "role", t.role === "user" ? "Patient" : "Assistant"), el("span", "txt", t.content), el("span", "ts", clock(t.ts)));
+        lines.appendChild(row);
+      });
+      box.append(head, lines);
+      return box;
+    }));
+  }
+
+  function notice(text) { const n = $("notice"); n.textContent = text; n.hidden = !text; }
+
+  async function load() {
+    try {
+      const r = await fetch("/staff/data?key=" + encodeURIComponent(KEY), { cache: "no-store" });
+      if (r.status === 401 || r.status === 404) throw new Error("This page needs the staff key in its address.");
+      if (!r.ok) throw new Error("Could not load the latest data. Showing the last update and trying again in 30 seconds.");
+      const j = await r.json();
+      renderCounts(j.today); renderBookings(j.bookings); renderTakeovers(j.takeovers);
+      $("stamp").textContent = "Updated " + clock(new Date().toISOString()) + " · sample clinic, fake data only";
+      notice("");
+    } catch (e) {
+      notice(e instanceof TypeError ? "Could not reach the server. Showing the last update and trying again in 30 seconds." : e.message);
+    }
+  }
+  load();
+  setInterval(() => { if (!document.hidden) load(); }, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+</script>
+</body>
+</html>

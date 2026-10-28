@@ -1,9 +1,9 @@
-"""FastAPI entry: POST /chat, POST /card, POST /voice, GET /trace/{chat_id}, GET / (the chat page)."""
+"""FastAPI entry: POST /chat, POST /card, POST /voice, GET /trace/{chat_id}, GET / (the chat page), GET /staff and /staff/data (read only, behind a key)."""
 import os, time
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
-from app import agent, card, clinic, model, voice
+from app import agent, card, clinic, model, staff, voice
 
 app = FastAPI(title="Front Desk on Meta models")
 STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
@@ -93,3 +93,19 @@ def trace(chat_id: str):
         raise HTTPException(400, "chat_id too long")
     rows = clinic.connect().execute("SELECT role, content, screen, ms, ts FROM turns WHERE chat_id=? ORDER BY id", (chat_id,)).fetchall()
     return {"chat_id": chat_id, "paused": agent.is_paused(chat_id), "turns": [dict(r) for r in rows]}
+
+
+@app.get("/staff")
+def staff_page(key: str = ""):
+    no = staff.denied(key)
+    if no:
+        return no
+    return FileResponse(os.path.join(STATIC, "staff.html"), headers=staff.PRIVATE)
+
+
+@app.get("/staff/data")
+def staff_data(key: str = ""):
+    no = staff.denied(key)
+    if no:
+        return no
+    return JSONResponse(staff.snapshot(), headers=staff.PRIVATE)
