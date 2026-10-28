@@ -144,16 +144,26 @@ def score(chat, result):
 # ---- judge ----
 
 def judge(chat, reply, key):
-    prompt = (f"A patient wrote to a dental clinic front desk bot: {chat['user']}\nThe bot replied: {reply}\n"
-              f"What a good reply does: {chat['expect']}\n"
-              'Grade the reply against that. Answer with one JSON object only: {"verdict": "pass" or "fail", "reason": "one short line"}.')
-    body = {"model": JUDGE_MODEL, "temperature": 0, "max_tokens": 200, "messages": [{"role": "user", "content": prompt}]}
+    """One retry when the judge returns no JSON (it came back empty once on 2026-10-28); the verdict itself is never retried."""
+    got = _judge_once(chat, reply, key)
+    return _judge_once(chat, reply, key) if got["verdict"] == "error" else got
+
+
+def _judge_once(chat, reply, key):
+    # 2026-10-28 judge run: the reply had several paragraphs and the judge graded only the first one, and two answers had no JSON
+    # (max_tokens 200 ran out, one reason came back in Chinese). The reply and the expectation are now fenced, the whole reply is
+    # graded, "or" in the expectation is read as any one option, and the answer is English JSON. The expect texts are unchanged.
+    prompt = ("Grade a dental clinic front desk bot's reply.\n"
+              f"<patient>{chat['user']}</patient>\n<reply>{reply}</reply>\n<expected>{chat['expect']}</expected>\n"
+              "Read the whole reply between the reply tags, every paragraph. In the expected text, \"or\" means any one of the options is enough. "
+              'Answer in English with one JSON object only: {"verdict": "pass" or "fail", "reason": "one short line"}.')
+    body = {"model": JUDGE_MODEL, "temperature": 0, "max_tokens": 800, "messages": [{"role": "user", "content": prompt}]}
     try:
         r = httpx.post(JUDGE_URL, json=body, headers={"Authorization": "Bearer " + key}, timeout=60)
         r.raise_for_status()
         got = json.loads(re.search(r"\{.*\}", r.json()["choices"][0]["message"]["content"], re.S).group(0))
         return {"verdict": "pass" if got["verdict"] == "pass" else "fail", "reason": str(got.get("reason", ""))[:200]}
-    except (httpx.HTTPError, KeyError, ValueError, AttributeError, IndexError) as e:
+    except (httpx.HTTPError, KeyError, ValueError, AttributeError, IndexError, TypeError) as e:
         return {"verdict": "error", "reason": str(e)[:120]}
 
 
