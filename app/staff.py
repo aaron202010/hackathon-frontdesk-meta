@@ -44,10 +44,11 @@ def _count(con, sql, params):
 
 def today_counts(con, today):
     start, end = _day_window(today)
-    screened = "SELECT COUNT(*) FROM turns WHERE role='user' AND screen=? AND ts>=? AND ts<?"
+    # the uptime monitor's own chat (chat_id monitor-...) is not a patient: left out of every count and list
+    screened = "SELECT COUNT(*) FROM turns WHERE role='user' AND screen=? AND ts>=? AND ts<? AND chat_id NOT LIKE 'monitor-%'"
     return {
         "date": today.isoformat(),
-        "chats_started": _count(con, "SELECT COUNT(*) FROM (SELECT MIN(ts) AS first FROM turns GROUP BY chat_id) WHERE first>=? AND first<?", (start, end)),
+        "chats_started": _count(con, "SELECT COUNT(*) FROM (SELECT MIN(ts) AS first FROM turns WHERE chat_id NOT LIKE 'monitor-%' GROUP BY chat_id) WHERE first>=? AND first<?", (start, end)),
         "bookings_made": _count(con, "SELECT COUNT(*) FROM bookings WHERE created>=? AND created<?", (start, end)),
         "medical_questions": _count(con, screened, ("clinical", start, end)),
         "emergencies": _count(con, screened, ("emergency", start, end)),
@@ -89,7 +90,7 @@ def takeovers(con):
     chats = con.execute("""
         SELECT c.chat_id, MAX(CASE WHEN t.screen='takeover' THEN t.ts END) AS taken_at, COUNT(t.id) AS turns
         FROM chats c LEFT JOIN turns t ON t.chat_id=c.chat_id
-        WHERE c.paused=1 GROUP BY c.chat_id ORDER BY taken_at DESC LIMIT ?""", (MAX_TAKEOVERS,)).fetchall()
+        WHERE c.paused=1 AND c.chat_id NOT LIKE 'monitor-%' GROUP BY c.chat_id ORDER BY taken_at DESC LIMIT ?""", (MAX_TAKEOVERS,)).fetchall()
     out = []
     for c in chats:
         last = con.execute("SELECT role, content, ts FROM turns WHERE chat_id=? ORDER BY id DESC LIMIT 3", (c["chat_id"],)).fetchall()

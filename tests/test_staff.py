@@ -149,3 +149,11 @@ def test_trace_needs_the_staff_key(monkeypatch):
     monkeypatch.setenv("FRONTDESK_STAFF_KEY", "k1")
     assert client.get("/trace/some-chat").status_code == 401
     assert client.get("/trace/some-chat", params={"key": "k1"}).status_code == 200
+
+
+def test_the_uptime_monitor_is_not_counted_as_a_patient(monkeypatch):
+    monkeypatch.setenv("FRONTDESK_STAFF_KEY", "k2")
+    before = client.get("/staff/data", params={"key": "k2"}).json()["today"]["medical_questions"]
+    client.post("/chat", json={"chat_id": "monitor-watch", "text": "what medicine can I take"})
+    after = client.get("/staff/data", params={"key": "k2"}).json()["today"]["medical_questions"]
+    assert after == before
