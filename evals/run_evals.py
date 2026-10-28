@@ -172,7 +172,8 @@ def _judge_once(chat, reply, key):
 def run_chat(chat):
     chat_id = f"eval-{chat['id']}-{uuid.uuid4().hex[:6]}"
     out = agent.handle(chat_id, chat["user"])
-    return {"screen": out["screen"], "reply": out["reply"], "paused": agent.is_paused(chat_id)}
+    return {"screen": out["screen"], "reply": out["reply"], "paused": agent.is_paused(chat_id),
+            "reply_check": [s["label"] for s in out.get("steps", []) if s["label"].startswith("Reply check")]}
 
 
 def update_readme(date, passed, total, mode, judged=None):
@@ -208,7 +209,7 @@ def main():
         res = run_chat(chat)
         verdict = judge(chat, res["reply"], key) if key else {"verdict": "skipped", "reason": ""}
         rows.append({"id": chat["id"], "lang": chat["lang"], "user": chat["user"], "screen": res["screen"], "reply": res["reply"],
-                     "rule": score(chat, res), "judge": verdict})
+                     "reply_check": res["reply_check"], "rule": score(chat, res), "judge": verdict})
     print_table(rows)
     if not key:
         print("judge skipped" + ("" if args.judge else " (no --judge flag)") + ("" if not args.judge else ": no OPENROUTER_API_KEY in the environment"))

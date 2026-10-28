@@ -1,10 +1,11 @@
 """The chat loop: screen, then the model with the clinic facts and four tools, tool results read back into the reply."""
 import datetime, json
-from app import card, clinic, guard, model
+from app import card, clinic, guard, model, verify
 
 G = clinic.CLINIC["guardrails"]
 HISTORY_TURNS = 10
 MAX_TOOL_ROUNDS = 4
+MAX_REPLY_RETRIES = 2  # the reply check's retries before staff takes over
 TOOLS = [
     {"type": "function", "function": {"name": "open_slots", "description": "Open appointment slots from the clinic schedule. Never invent a slot.",
      "parameters": {"type": "object", "properties": {
@@ -144,11 +145,14 @@ def finish(chat_id, reply, kind, ms=0, booking=None, steps=None):
 
 
 def model_turn(chat_id, text, steps=None):
-    """Model call with tool rounds; a failed call gets the honest line plus the staff handoff."""
+    """Model call with tool rounds; a failed call gets the honest line plus the staff handoff. Every final reply goes through
+    verify.check (prices, dates, times backed by the tools, the chat or the clinic facts); a miss gets the reply back to the
+    model with the misses, MAX_REPLY_RETRIES times, then the chat is handed to staff."""
     messages = [{"role": "system", "content": system_prompt(guard.is_taglish(text))}] + history(chat_id)[:-1] + [{"role": "user", "content": text}]
-    booking, ms = None, 0
+    booking, ms, retries = None, 0, 0
+    sources = [m["content"] or "" for m in messages[1:]]  # what a reply may quote: the chat and, below, each tool result; never a rejected reply
     steps = steps if steps is not None else []
-    for _ in range(MAX_TOOL_ROUNDS):
+    for _ in range(MAX_TOOL_ROUNDS + MAX_REPLY_RETRIES):
         try:
             r = model.complete(messages, tools=TOOLS)
         except model.ModelError:
@@ -157,7 +161,21 @@ def model_turn(chat_id, text, steps=None):
         who = model.model_id() if r["mode"] == "live" else "stub model"
         step(steps, f"{who} {'answered' if not r['tool_calls'] else 'chose ' + ', '.join(c['name'] for c in r['tool_calls'])}", "", r["ms"])
         if not r["tool_calls"]:
-            return r["content"] or G["model_error_reply"], booking, ms
+            reply = r["content"] or G["model_error_reply"]
+            misses = verify.check(reply, sources)
+            if not misses:
+                step(steps, "Reply check: every price, date and time came from the tools or the clinic facts")
+                return reply, booking, ms
+            retries += 1
+            if retries > MAX_REPLY_RETRIES:
+                step(steps, "Reply check failed again: handed to staff", ", ".join(misses))
+                set_paused(chat_id, True)
+                return guard.fixed("verify_handoff_reply", text), booking, ms
+            step(steps, f"Reply check: not backed by the tools ({', '.join(misses)}), asked the model to fix it")
+            messages += [{"role": "assistant", "content": reply},
+                         {"role": "user", "content": "Check failed before sending: " + ", ".join(misses) + " did not come from the tool results, "
+                          "the chat or the clinic facts. Rewrite the reply with only values from those. Call a tool if you need a value."}]
+            continue
         messages.append({"role": "assistant", "content": r["content"], "tool_calls": [
             {"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": json.dumps(c["arguments"])}} for c in r["tool_calls"]]})
         for c in r["tool_calls"]:
@@ -166,4 +184,5 @@ def model_turn(chat_id, text, steps=None):
             args = ", ".join(f"{k} {v}" for k, v in c["arguments"].items() if k not in ("name", "mobile"))
             step(steps, TOOL_LABEL.get(c["name"], c["name"]) + (f" ({args})" if args else ""), result)
             messages.append({"role": "tool", "tool_call_id": c["id"], "name": c["name"], "content": result})
+            sources.append(result)
     return G["model_error_reply"], booking, ms

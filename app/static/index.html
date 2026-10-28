@@ -170,7 +170,7 @@
   const stepsEl = document.getElementById("steps");
   function kindOf(label) {
     if (/muse|stub model|SAM 3\.1|read the card/i.test(label)) return "model";
-    if (/^(Screened|Emergency|Medical|Prompt injection|Staff|Card too)/.test(label)) return "guard";
+    if (/^(Screened|Emergency|Medical|Prompt injection|Staff|Card too|Reply check)/.test(label)) return "guard";
     return "tool";
   }
   function secs(ms) { return ms == null ? "" : (ms / 1000).toFixed(1) + " s"; }

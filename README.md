@@ -34,9 +34,10 @@ app code, the evals, the chat page, voice notes and the staff view were written 
 
 1. Safety screen first: emergency words, medical questions, rule-change attempts and staff takeover get a fixed reply; the model is not called.
 2. Everything else goes to Muse Spark with four tools. Prices, slots, coverage and the booking summary come from the tools and are quoted word for word.
-3. A card photo: SAM 3.1 crops, Muse Spark reads, the HMO check runs against the clinic's accepted list; an unclear card gets "send a clearer photo".
-4. A voice note: Muse Voice transcribes, then step 1 and 2 run on the text.
-5. Staff view (read only, behind a key): today's counts, upcoming bookings with masked mobiles, the chats staff took over.
+3. A built-in reply check runs before any reply is sent: every price, date and time in it must come from that turn's tool results, the chat or the clinic's own facts. A miss goes back to the model with the misses named; after two retries the chat is handed to staff. It is part of the agent loop, not a tool the model can choose to skip, and it shows as a step in the panel.
+4. A card photo: SAM 3.1 crops, Muse Spark reads, the HMO check runs against the clinic's accepted list; an unclear card gets "send a clearer photo".
+5. A voice note: Muse Voice transcribes, then step 1 and 2 run on the text.
+6. Staff view (read only, behind a key): today's counts, upcoming bookings with masked mobiles, the chats staff took over.
 
 ## Eval
 
@@ -48,6 +49,9 @@ Voice notes 2026-10-28: 5 of 5 pass (transcribed by muse-voice-transcribe-1.0, t
 provider; 5 voice notes in [evals/voice_notes.json](evals/voice_notes.json), synthetic voices, scored on what was said. Full
 results with every reply: [evals/results-2026-10-28.json](evals/results-2026-10-28.json) and
 [evals/voice-results-2026-10-28.json](evals/voice-results-2026-10-28.json).
+
+Builder and reviewer are kept apart: the judge is a model from another provider than the agent, and code written by one
+agent was reviewed by another before it was merged.
 
 Limits: 20 chats and 5 synthetic voice notes are a smoke test, not a measure of accuracy with real patients; the judge is one
 model. The clinic is fake, coverage answers come only from the clinic's own HMO list, and the clinic confirms every booking.

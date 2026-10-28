@@ -280,7 +280,9 @@
     "resume_reply_tl": "The assistant is back on this chat. Ano po ang maitutulong ko?",
     "model_error_reply": "Sorry, I could not answer right now. Our staff will continue this chat, or call the clinic at 0917 000 0000.",
     "takeover_command": "/takeover",
-    "takeover_reply": "Our staff will continue this chat. Please wait a moment."
+    "takeover_reply": "Our staff will continue this chat. Please wait a moment.",
+    "verify_handoff_reply": "I want to be sure the details are right, so our staff will confirm them here in this chat. Please wait a moment.",
+    "verify_handoff_reply_tl": "Gusto ko pong siguraduhin na tama ang details, kaya ang staff po namin ang magko-confirm dito sa chat. Sandali lang po."
   },
   "_hmo_note": "Insurer names are real Philippine HMOs, used only as names. The covered services and notes are this sample clinic's demo arrangement, not any insurer's published plan terms. Every card image is drawn by us, carries no logo, and says it was not issued by the insurer."
 }

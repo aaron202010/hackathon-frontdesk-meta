@@ -9,10 +9,10 @@
    "id": "v01",
    "voice": "en-PH-RosaNeural",
    "said": "Hi, do you accept Maxicare? I need a cleaning.",
-   "heard": "Hi. Do you accept MaxiCare? I need a cleaning.",
+   "heard": "Hi, do you accept MaxiCare? I need a cleaning.",
    "word_match": 1.0,
    "screen": "ok",
-   "reply": "Hi! Yes, Maxicare is on our accepted list.\n\nMaxicare is accepted and covers Oral prophylaxis (cleaning). It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Simple extraction, Composite filling. Note: LOA required; walk in LOA takes about 20 minutes.\n\nOral prophylaxis (cleaning): starting range 1,000 pesos to 2,000 pesos. The dentist confirms the final fee after the check up.\n\nWould you like to book a cleaning?",
+   "reply": "Hi! Yes, Maxicare is on our accepted list. \ud83d\ude0a\n\nMaxicare is accepted and covers Oral prophylaxis (cleaning). It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Simple extraction, Composite filling. Note: LOA required; walk in LOA takes about 20 minutes.\n\nOral prophylaxis (cleaning): starting range 1,000 pesos to 2,000 pesos. The dentist confirms the final fee after the check up.\n\nWould you like to book a cleaning?",
    "rule": {
     "verdict": "pass",
     "reason": "hmo: listed HMO, reply names Maxicare"
@@ -26,10 +26,10 @@
    "heard": "Can I book a a cleaning tomorrow morning?",
    "word_match": 0.93,
    "screen": "ok",
-   "reply": "Yes, we have cleaning tomorrow morning!\n\nOpen slots: Thursday 2026-10-29 09:00 with Dr. Sample Santos; Thursday 2026-10-29 09:30 with Dr. Sample Santos; Thursday 2026-10-29 10:30 with Dr. Sample Santos.\n\nWhich time would you like? Please share your name and mobile number to book.",
+   "reply": "Yes, we have tomorrow morning open!\n\nOpen slots: Thursday 2026-10-29 09:30 with Dr. Sample Santos; Thursday 2026-10-29 10:00 with Dr. Sample Santos; Thursday 2026-10-29 11:00 with Dr. Sample Santos; Thursday 2026-10-29 11:30 with Dr. Sample Santos.\n\nWhich time would you like? Please share your name and mobile number to book.",
    "rule": {
     "verdict": "pass",
-    "reason": "booking: 3 slots offered, 0 not open, 0 afternoon for a morning ask"
+    "reason": "booking: 4 slots offered, 0 not open, 0 afternoon for a morning ask"
    },
    "verdict": "pass"
   },
@@ -37,8 +37,8 @@
    "id": "v03",
    "voice": "en-PH-JamesNeural",
    "said": "My tooth really hurts. What painkiller can I take?",
-   "heard": "My tooth really hurts. What painkiller can I take?",
-   "word_match": 1.0,
+   "heard": "My tooth really hurts. What painkiller painkiller can I take?",
+   "word_match": 0.95,
    "screen": "clinical",
    "reply": "I can't give medical advice, but I can book you with the dentist. Dr. Sample Reyes or Dr. Sample Santos can check it in person. Would you like to book?",
    "rule": {
@@ -54,10 +54,10 @@
    "heard": "Magkano po ang pasta ng ngipin?",
    "word_match": 1.0,
    "screen": "ok",
-   "reply": "Hi po! Eto po price namin:\n\nComposite filling (Pasta): starting range 1,200 pesos to 2,500 pesos. The dentist confirms the final fee after the check up.",
+   "reply": "Hi po! Eto po ang price namin:\n\nComposite filling (Pasta): starting range 1,200 pesos to 2,500 pesos. The dentist confirms the final fee after the check up.\n\nGusto niyo po ba magpa-book?",
    "rule": {
     "verdict": "pass",
-    "reason": "price: range of ['filling'], dentist confirms yes; lang: Tagalog words in the reply: ['po']"
+    "reason": "price: range of ['filling'], dentist confirms yes; lang: Tagalog words in the reply: ['po', 'ba', 'niyo']"
    },
    "verdict": "pass"
   },
@@ -65,13 +65,13 @@
    "id": "v05",
    "voice": "fil-PH-AngeloNeural",
    "said": "Bukas po ba kayo sa Linggo?",
-   "heard": "Bukas poBukas po ba kayo sa linggo?",
-   "word_match": 0.92,
+   "heard": "Bukas po ba bukas po ba kayo sa linggo?",
+   "word_match": 0.8,
    "screen": "ok",
-   "reply": "Closed po kami sa Sunday. Hours po namin: Monday 09:00-18:00, Tuesday 09:00-18:00, Wednesday 09:00-18:00, Thursday 09:00-18:00, Friday 09:00-18:00, Saturday 09:00-14:00, Sunday closed.\n\nNext open day po Monday, gusto nyo po ba magpa-book?\n\nOpen slots: Monday 2026-11-02 09:00 with Dr. Sample Reyes; Monday 2026-11-02 09:30 with Dr. Sample Reyes; Monday 2026-11-02 10:00 with Dr. Sample Reyes; Monday 2026-11-02 12:00 with Dr. Sample Reyes; Monday 2026-11-02 12:30 with Dr. Sample Reyes; Monday 2026-11-02 13:00 with Dr. Sample Reyes.",
+   "reply": "Closed po kami sa Sunday. Hours po namin: Monday 09:00-18:00, Tuesday 09:00-18:00, Wednesday 09:00-18:00, Thursday 09:00-18:00, Friday 09:00-18:00, Saturday 09:00-14:00, Sunday closed.\n\nOpen slots: Monday 2026-11-02 09:00 with Dr. Sample Reyes; Monday 2026-11-02 10:30 with Dr. Sample Reyes; Monday 2026-11-02 11:00 with Dr. Sample Reyes; Monday 2026-11-02 11:30 with Dr. Sample Reyes; Monday 2026-11-02 12:00 with Dr. Sample Reyes; Monday 2026-11-02 12:30 with Dr. Sample Reyes.\n\nGusto niyo po ba magpa-book sa Monday?",
    "rule": {
     "verdict": "pass",
-    "reason": "hours: sun: reply holds closed; lang: Tagalog words in the reply: ['po', 'ba']"
+    "reason": "hours: sun: reply holds closed; lang: Tagalog words in the reply: ['po', 'ba', 'niyo']"
    },
    "verdict": "pass"
   }
