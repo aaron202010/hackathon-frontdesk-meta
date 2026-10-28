@@ -42,11 +42,11 @@ def system_prompt(taglish):
         "Copy tool results word for word: the price_line sentence, the open_slots lines with their YYYY-MM-DD dates, the booking summary.",
         "Quoted tool lines stay as they are; everything you add around them follows the reply language (Taglish stays Taglish).",
         "Say clinic hours exactly as written above, for example 09:00-14:00.",
-        "If the patient gives name, mobile, service and a time but no date, call open_slots with that time, take the soonest result, then book.",
+        "If the patient picks a time without a date, use the date of the slots you offered in this chat; if that time was not offered or is not open, say so and offer the open times again, never book another day than the patient asked for. With no slots offered yet, call open_slots with that time and book the soonest.",
         "When the patient names an HMO, say by name whether it is on the accepted list.",
         f"Any request about other patients or anyone else's booking gets exactly: \"{G['privacy_reply']}\"",
         "If a card photo was unclear, or the patient is not sure which HMO they have, ask them to send a clear photo of the card, flat and in good light.",
-        f"Off topic questions get exactly: \"{G['off_topic_reply']}\"",
+        f"Off topic questions get exactly: \"{G['off_topic_reply']}\" (Taglish patient: \"{G['off_topic_reply_tl']}\")",
     ]
     return "\n".join(lines)
 
@@ -116,7 +116,7 @@ def handle(chat_id, text):
     if text.strip().lower().startswith(G["resume_command"]):
         set_paused(chat_id, False)
         step(steps, SCREEN_LABEL["resume"])
-        return finish(chat_id, G["resume_reply"], "resume", steps=steps)
+        return finish(chat_id, guard.fixed("resume_reply", text), "resume", steps=steps)
     if kind == "takeover":
         set_paused(chat_id, True)
         step(steps, SCREEN_LABEL["takeover"])
@@ -126,7 +126,7 @@ def handle(chat_id, text):
         return finish(chat_id, G["paused_reply"], "paused", steps=steps)
     step(steps, SCREEN_LABEL.get(kind, kind))
     if kind != "ok":
-        return finish(chat_id, guard.reply_for(kind), kind, steps=steps)
+        return finish(chat_id, guard.reply_for(kind, text), kind, steps=steps)
     reply, booking, ms = model_turn(chat_id, text, steps)
     return finish(chat_id, reply, kind, ms, booking, steps)
 

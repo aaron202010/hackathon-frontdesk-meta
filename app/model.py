@@ -103,7 +103,7 @@ def _date_hint(t):
     if m:
         return m.group(0)
     dates = [d["date"] for d in clinic.SCHEDULE["days"] if d["hours"] != "closed"]
-    today = datetime.date.today()
+    today = clinic.now_manila().date()
     if "bukas" in t or "tomorrow" in t:
         d = (today + datetime.timedelta(days=1)).isoformat()
         return d if d in dates else dates[0]
@@ -147,7 +147,7 @@ def _stub_intent(t, raw, messages):
         return [("open_slots", {"date": _date_hint(t), "dentist": _dentist_hint(t), "period": _period(t)})], None
     if any(w in t for w in ("hi", "hello", "kumusta", "good morning")) and len(t.split()) <= 4:
         return [], "Hello po! Bright Smile Dental Clinic here. I can help with prices, hours, HMO cards and bookings. Ano po ang kailangan ninyo?"
-    return [], G["off_topic_reply"]
+    return [], G["off_topic_reply_tl"] if is_taglish(raw) else G["off_topic_reply"]
 
 
 def _card_ask(raw, taglish):

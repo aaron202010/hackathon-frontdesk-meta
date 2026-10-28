@@ -22,11 +22,16 @@ def screen(text):
     return "ok"
 
 
-def reply_for(kind):
+def fixed(key, text=""):
+    """A fixed line in the patient's language: the Taglish variant (<key>_tl) only when the patient wrote Taglish."""
+    return G.get(key + "_tl") if is_taglish(text) and G.get(key + "_tl") else G.get(key, "")
+
+
+def reply_for(kind, text=""):
     """The fixed reply for a screened message; the injection reply carries the normal price ranges, no discount."""
     if kind == "injection":
         return G["injection_reply"] + " " + " ".join(price_line(s["id"]) for s in services())
-    return G.get(kind + "_reply", "")
+    return fixed(kind + "_reply", text)
 
 
 # words that are also English ("may", "sa" in names) only count with a second Tagalog word (2026-10-28: "May I book"

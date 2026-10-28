@@ -190,15 +190,18 @@
     t.append(q, ol, tot); stepsEl.appendChild(t); stepsEl.scrollTop = stepsEl.scrollHeight;
   }
   document.getElementById("panelBtn").addEventListener("click", () => document.getElementById("panel").classList.toggle("open"));
-  async function send(text) {
-    add(text, "me");
+  const SCREEN_NOTE = { clinical: "Medical question: the model was not called", emergency: "Emergency words: clinic phone first",
+    injection: "Rule change attempt: fixed reply", takeover: "Staff took over this chat", paused: "Staff is handling this chat",
+    resume: "Assistant is back on this chat" };
+  async function send(text, quiet) {
+    if (!quiet) add(text, "me");
     try {
       const t0 = performance.now();
       const r = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: chatId, text }) });
       const j = await r.json();
       add(j.reply || "(no reply)", "bot");
-      addSteps("You: " + text, j.steps, performance.now() - t0);
-      if (j.screen !== "ok") add("screen: " + j.screen, "sys");
+      addSteps(quiet ? "Staff pressed takeover" : "You: " + text, j.steps, performance.now() - t0);
+      if (j.screen !== "ok") add(SCREEN_NOTE[j.screen] || j.screen, "sys");
     } catch (e) { add("Could not reach the server.", "sys"); }
   }
   document.getElementById("card").addEventListener("change", async e => {
@@ -216,7 +219,7 @@
     } catch (err) { add("Could not reach the server.", "sys"); }
   });
   document.getElementById("f").addEventListener("submit", e => { e.preventDefault(); const v = input.value.trim(); if (!v) return; input.value = ""; send(v); });
-  document.getElementById("takeover").addEventListener("click", () => send("/takeover"));
+  document.getElementById("takeover").addEventListener("click", () => send("/takeover", true));
 </script>
 </body>
 </html>

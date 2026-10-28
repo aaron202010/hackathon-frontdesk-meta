@@ -1,5 +1,6 @@
 """Clinic facts, schedule and the fake booking store. Everything comes from data/clinic.json and data/schedule.json."""
 import json, os, sqlite3, datetime
+from zoneinfo import ZoneInfo
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLINIC = json.load(open(os.path.join(ROOT, "data", "clinic.json")))
@@ -91,19 +92,29 @@ def booked_keys(con=None):
     return {(r["date"], r["time"], r["dentist_id"]) for r in con.execute("SELECT date, time, dentist_id FROM bookings")}
 
 
+def now_manila():
+    """The clinic's clock; the server runs on UTC."""
+    return datetime.datetime.now(ZoneInfo("Asia/Manila"))
+
+
+def is_past(date, time):
+    """True for a slot at or before the clinic's current minute (2026-10-28: a 22:40 chat booked 09:30 the same day)."""
+    now = now_manila()
+    return str(date) < now.date().isoformat() or str(date) == now.date().isoformat() and str(time) <= now.strftime("%H:%M")
+
+
 def open_slots(date=None, dentist=None, limit=6, period=None, time=None):
     """Open slots from the schedule minus bookings in the store. period: 'morning' (before 12:00) or 'afternoon';
-    time: one HH:MM. Days before today are skipped (live run 2026-10-28 offered yesterday's slots)."""
-    today = datetime.date.today().isoformat()
+    time: one HH:MM. Past days and today's past times are skipped (live run 2026-10-28 offered yesterday's slots)."""
     did = dentist_id_for(dentist)
     taken = booked_keys()
     names = {d["id"]: d["name"] for d in CLINIC["clinic"]["dentists"]}
     out = []
     for day in SCHEDULE["days"]:
-        if date and day["date"] != str(date) or day["date"] < today:
+        if date and day["date"] != str(date):
             continue
         for s in day["slots"]:
-            if s["taken"] or (did and s["dentist"] != did) or (day["date"], s["time"], s["dentist"]) in taken:
+            if s["taken"] or (did and s["dentist"] != did) or (day["date"], s["time"], s["dentist"]) in taken or is_past(day["date"], s["time"]):
                 continue
             if period == "morning" and s["time"] >= "12:00" or period == "afternoon" and s["time"] < "12:00":
                 continue
@@ -150,6 +161,8 @@ def hmo_check(name_or_alias, service_id=None):
 
 
 def slot_is_open(date, time, dentist_id):
+    if is_past(date, time):
+        return False
     for day in SCHEDULE["days"]:
         if day["date"] == date:
             return any(s["time"] == time and s["dentist"] == dentist_id and not s["taken"] for s in day["slots"])
@@ -185,7 +198,7 @@ def hmo_status_line(hmo, service_id):
     if not r["accepted"]:
         return f"HMO: {hmo} is not on our accepted list, so cash for now; the clinic can check with the HMO."
     s = service(service_id)["name"]
-    note = f", {r['note'].lower()}" if r["note"] else ""
+    note = f", {r['note']}" if r["note"] else ""
     return f"HMO: {r['insurer']}, {'covered for ' + s if r['covered'] else 'accepted but not for ' + s}{note}."
 
 

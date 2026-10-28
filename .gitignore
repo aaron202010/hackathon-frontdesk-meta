@@ -8,3 +8,4 @@ data/private/
 logs/
 data/frontdesk.db
 .pytest_cache/
+video/
