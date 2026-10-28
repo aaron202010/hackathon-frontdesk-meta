@@ -142,3 +142,10 @@ def test_lists_are_capped_and_skip_past_bookings(staff_on, monkeypatch):
     d = data()
     assert len(d["bookings"]) == 50 and d["bookings"][0]["name"] == "Patient 00" and all(b["name"] != "Old" for b in d["bookings"])
     assert len(d["takeovers"]) == 20 and d["takeovers"][0]["chat_id"] == "chat-24-" and d["takeovers"][0]["last_turns"][0]["content"] == "x" * 159 + "…"
+
+
+def test_trace_needs_the_staff_key(monkeypatch):
+    # Muse Code review 2026-10-28: chat ids are chosen by the browser, so an open /trace read any chat
+    monkeypatch.setenv("FRONTDESK_STAFF_KEY", "k1")
+    assert client.get("/trace/some-chat").status_code == 401
+    assert client.get("/trace/some-chat", params={"key": "k1"}).status_code == 200

@@ -152,10 +152,12 @@ def model_turn(chat_id, text, steps=None):
     booking, ms, retries = None, 0, 0
     sources = [m["content"] or "" for m in messages[1:]]  # what a reply may quote: the chat and, below, each tool result; never a rejected reply
     steps = steps if steps is not None else []
-    for _ in range(MAX_TOOL_ROUNDS + MAX_REPLY_RETRIES):
+    tool_rounds = 0
+    while True:
         try:
             r = model.complete(messages, tools=TOOLS)
         except model.ModelError:
+            set_paused(chat_id, True)  # the error line says staff will continue this chat
             return G["model_error_reply"], None, ms
         ms += r["ms"]
         who = model.model_id() if r["mode"] == "live" else "stub model"
@@ -176,6 +178,11 @@ def model_turn(chat_id, text, steps=None):
                          {"role": "user", "content": "Check failed before sending: " + ", ".join(misses) + " did not come from the tool results, "
                           "the chat or the clinic facts. Rewrite the reply with only values from those. Call a tool if you need a value."}]
             continue
+        tool_rounds += 1
+        if tool_rounds > MAX_TOOL_ROUNDS:
+            set_paused(chat_id, True)
+            step(steps, "Too many tool rounds: handed to staff")
+            return G["model_error_reply"], booking, ms
         messages.append({"role": "assistant", "content": r["content"], "tool_calls": [
             {"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": json.dumps(c["arguments"])}} for c in r["tool_calls"]]})
         for c in r["tool_calls"]:
@@ -185,4 +192,3 @@ def model_turn(chat_id, text, steps=None):
             step(steps, TOOL_LABEL.get(c["name"], c["name"]) + (f" ({args})" if args else ""), result)
             messages.append({"role": "tool", "tool_call_id": c["id"], "name": c["name"], "content": result})
             sources.append(result)
-    return G["model_error_reply"], booking, ms

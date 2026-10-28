@@ -39,3 +39,28 @@ def test_three_misses_hand_the_chat_to_staff(monkeypatch):
     monkeypatch.setattr(model, "complete", fake_model(["It is 1,750 pesos."] * 3))
     out = agent.handle("verify-2", "how much is cleaning")
     assert out["reply"] == G["verify_handoff_reply"] and agent.is_paused("verify-2")
+
+
+def test_review_cases_bare_hours_month_dates_and_unmarked_amounts():
+    # Muse Code review 2026-10-28: these slipped through the first version
+    assert verify.check("See you Saturday at 3pm", ["Open slots: Saturday 2026-10-31 10:00"]) == ["time 15:00"]
+    assert verify.check("See you on Nov 9.", [TOOL_LINE]) == ["date Nov 9"]
+    assert verify.check("X-ray 14 pesos", []) == ["price 14 pesos"]
+    assert verify.check("Cleaning is 1350.", []) == ["number 1,350"]
+    assert verify.check("See you Nov 9 at 9:30 AM, call 0917 000 0000. Member MX-000001, valid 12/2027.",
+                        ["Open slots: Monday 2026-11-09 09:30", "Maxicare MX-000001 12/2027"]) == []
+
+
+def test_a_model_error_and_endless_tool_rounds_hand_the_chat_to_staff(monkeypatch):
+    def broken(messages, tools=None, response_format=None):
+        raise model.ModelError("down")
+    monkeypatch.setattr(model, "complete", broken)
+    out = agent.handle("verify-3", "how much is cleaning")
+    assert out["reply"] == G["model_error_reply"] and agent.is_paused("verify-3")
+    calls = iter(range(100))
+    def tool_forever(messages, tools=None, response_format=None):
+        return {"content": "", "tool_calls": [{"id": f"t{next(calls)}", "name": "price_line", "arguments": {"service_id": "cleaning"}}],
+                "mode": "stub", "ms": 1, "usage": {}}
+    monkeypatch.setattr(model, "complete", tool_forever)
+    out = agent.handle("verify-4", "how much is cleaning")
+    assert out["reply"] == G["model_error_reply"] and agent.is_paused("verify-4")

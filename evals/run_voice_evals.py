@@ -21,8 +21,9 @@ def main():
         data = open(os.path.join(ROOT, "evals", "voice", n["id"] + ".webm"), "rb").read()
         heard = voice.transcribe(data, hint=n["said"].replace(" ", "_") + ".wav")
         acc = difflib.SequenceMatcher(None, words(n["said"]), words(heard)).ratio()
-        out = agent.handle(f"voice-eval-{n['id']}-{uuid.uuid4().hex[:6]}", heard or "(nothing heard)")
-        res = {"screen": out["screen"], "reply": out["reply"], "paused": False}
+        chat_id = f"voice-eval-{n['id']}-{uuid.uuid4().hex[:6]}"
+        out = agent.handle(chat_id, heard or "(nothing heard)")
+        res = {"screen": out["screen"], "reply": out["reply"], "paused": agent.is_paused(chat_id)}
         rule = run_evals.score({"id": n["id"], "user": n["said"], "expect": n["expect"], "tags": n["tags"], "lang": n["lang"]}, res)
         ok = rule["verdict"] == "pass" and acc >= MIN_WORDS
         rows.append({"id": n["id"], "voice": n["voice"], "said": n["said"], "heard": heard, "word_match": round(acc, 2),

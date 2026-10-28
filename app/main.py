@@ -22,8 +22,11 @@ _hits, _hits_lock = collections.defaultdict(collections.deque), threading.Lock()
 
 
 def rate_limit(request: Request):
-    default = "0" if model.stub_mode() else "40"
-    limit = int(os.environ.get("FRONTDESK_RATE", default) or 0)
+    default = 0 if model.stub_mode() else 40
+    try:
+        limit = int(os.environ.get("FRONTDESK_RATE", default) or 0)
+    except ValueError:
+        limit = default
     if limit <= 0:
         return
     ip, now = (request.client.host if request.client else "unknown"), time.time()
@@ -104,13 +107,18 @@ def voice_note(file: UploadFile = File(...), chat_id: str = Form(min_length=1, m
         return {"transcript": "", "reply": clinic.CLINIC["guardrails"]["model_error_reply"], "screen": "error", "steps": []}
     heard = {"label": f"{voice.ASR_MODEL} transcribed the voice note", "detail": text[:160], "ms": int((time.time() - t0) * 1000)}
     if not text:
+        agent.save_turn(chat_id, "user", "[sent a voice note, nothing heard]", "voice")
+        agent.save_turn(chat_id, "assistant", NOT_HEARD_LINE, "voice")
         return {"transcript": "", "reply": NOT_HEARD_LINE, "screen": "ok", "steps": [heard]}
     out = agent.handle(chat_id, text[:2000])
     return {"transcript": text, **out, "steps": [heard] + out.get("steps", [])}
 
 
 @app.get("/trace/{chat_id}")
-def trace(chat_id: str):
+def trace(chat_id: str, key: str = ""):
+    no = staff.denied(key)
+    if no:
+        return no
     if len(chat_id) > 64:
         raise HTTPException(400, "chat_id too long")
     rows = clinic.connect().execute("SELECT role, content, screen, ms, ts FROM turns WHERE chat_id=? ORDER BY id", (chat_id,)).fetchall()

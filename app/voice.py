@@ -14,8 +14,11 @@ def to_wav(data):
     with tempfile.TemporaryDirectory() as d:
         src, dst = os.path.join(d, "in"), os.path.join(d, "out.wav")
         open(src, "wb").write(data)
-        r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-t", str(MAX_SECONDS), "-ac", "1", "-ar", "24000",
-                            "-c:a", "pcm_s16le", "-map_metadata", "-1", dst], capture_output=True, timeout=60)
+        try:
+            r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-t", str(MAX_SECONDS), "-ac", "1", "-ar", "24000",
+                                "-c:a", "pcm_s16le", "-map_metadata", "-1", dst], capture_output=True, timeout=60)
+        except subprocess.TimeoutExpired:
+            raise ValueError("audio took too long to read")
         if r.returncode != 0 or not os.path.exists(dst) or os.path.getsize(dst) < 1000:
             raise ValueError("not audio")
         return open(dst, "rb").read()

@@ -84,7 +84,7 @@ def rule_hours(chat, r):
 def rule_booking(chat, r):
     if MOBILE.search(chat["user"]):
         return has(r["reply"], "confirms by text"), "full booking message: " + ("confirms by text" if has(r["reply"], "confirms by text") else "no confirm line")
-    open_set = {(d["date"], s["time"]) for d in clinic.SCHEDULE["days"] for s in d["slots"] if not s["taken"]}
+    open_set = {(s["date"], s["time"]) for s in clinic.open_slots(limit=10000)}  # booked and past slots are not open (Muse Code review)
     pairs = PAIR.findall(r["reply"])
     invented = [p for p in pairs if p not in open_set]
     late = [p for p in pairs if "morning" in chat["user"].lower() and p[1] >= "12:00"]
@@ -161,9 +161,10 @@ def _judge_once(chat, reply, key):
     try:
         r = httpx.post(JUDGE_URL, json=body, headers={"Authorization": "Bearer " + key}, timeout=60)
         r.raise_for_status()
-        got = json.loads(re.search(r"\{.*\}", r.json()["choices"][0]["message"]["content"], re.S).group(0))
+        text = r.json()["choices"][0]["message"]["content"]
+        got, _ = json.JSONDecoder().raw_decode(text[text.index("{"):])  # the first JSON object, not first { to last }
         return {"verdict": "pass" if got["verdict"] == "pass" else "fail", "reason": str(got.get("reason", ""))[:200]}
-    except (httpx.HTTPError, KeyError, ValueError, AttributeError, IndexError, TypeError) as e:
+    except (httpx.HTTPError, KeyError, ValueError, AttributeError, IndexError, TypeError) as e:  # ValueError covers no "{"
         return {"verdict": "error", "reason": str(e)[:120]}
 
 

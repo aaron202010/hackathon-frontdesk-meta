@@ -10,7 +10,7 @@
    "lang": "en",
    "user": "Hi, how much is a cleaning?",
    "screen": "ok",
-   "reply": "Hi! Oral prophylaxis (cleaning): starting range 1,000 pesos to 2,000 pesos. The dentist confirms the final fee after the check up.\nWould you like to book a cleaning?",
+   "reply": "Hi! Oral prophylaxis (cleaning): starting range 1,000 pesos to 2,000 pesos. The dentist confirms the final fee after the check up.\nWant me to book you a slot?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -20,7 +20,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply quotes the cleaning range, mentions dentist confirmation, and offers to book."
+    "reason": "The reply quotes the cleaning range, mentions dentist confirmation, and offers to book, matching all expected elements."
    }
   },
   {
@@ -28,7 +28,7 @@
    "lang": "en",
    "user": "Are you open on Sundays?",
    "screen": "ok",
-   "reply": "We're closed on Sundays. Our hours are Monday 09:00-18:00, Tuesday 09:00-18:00, Wednesday 09:00-18:00, Thursday 09:00-18:00, Friday 09:00-18:00, Saturday 09:00-14:00, Sunday closed.\n\nOur next open day is Monday:\n\nOpen slots: Monday 2026-11-02 09:00 with Dr. Sample Reyes; Monday 2026-11-02 10:30 with Dr. Sample Reyes; Monday 2026-11-02 11:00 with Dr. Sample Reyes; Monday 2026-11-02 11:30 with Dr. Sample Reyes; Monday 2026-11-02 12:00 with Dr. Sample Reyes; Monday 2026-11-02 12:30 with Dr. Sample Reyes.",
+   "reply": "We're closed on Sundays.\n\nHours: Monday 09:00-18:00, Tuesday 09:00-18:00, Wednesday 09:00-18:00, Thursday 09:00-18:00, Friday 09:00-18:00, Saturday 09:00-14:00, Sunday closed.\n\nOur next open day is Thursday:\n\nOpen slots: Thursday 2026-10-29 09:30 with Dr. Sample Santos; Thursday 2026-10-29 10:00 with Dr. Sample Santos; Thursday 2026-10-29 11:00 with Dr. Sample Santos; Thursday 2026-10-29 11:30 with Dr. Sample Santos; Thursday 2026-10-29 13:30 with Dr. Sample Santos; Thursday 2026-10-29 15:30 with Dr. Sample Santos.\n",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -38,7 +38,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "\u660e\u786e\u8bf4\u660e\u5468\u65e5\u5173\u95ed\uff0c\u7ed9\u51fa\u5468\u516d\u65f6\u95f4\u5e76\u63d0\u4f9b\u4e86\u5468\u4e00\u53ef\u9884\u7ea6\u65f6\u6bb5\u3002"
+    "reason": "The reply clearly states Sunday closure, provides hours including Saturday 9-2, and offers specific Thursday slots."
    }
   },
   {
@@ -46,7 +46,7 @@
    "lang": "en",
    "user": "Can I still book a cleaning tomorrow morning?",
    "screen": "ok",
-   "reply": "Yes, we still have openings tomorrow morning!\n\nOpen slots: Thursday 2026-10-29 09:30 with Dr. Sample Santos; Thursday 2026-10-29 10:00 with Dr. Sample Santos; Thursday 2026-10-29 11:00 with Dr. Sample Santos; Thursday 2026-10-29 11:30 with Dr. Sample Santos.\n\nWhich time would you like?",
+   "reply": "Yes, we still have slots tomorrow morning!\n\nOpen slots: Thursday 2026-10-29 09:30 with Dr. Sample Santos; Thursday 2026-10-29 10:00 with Dr. Sample Santos; Thursday 2026-10-29 11:00 with Dr. Sample Santos; Thursday 2026-10-29 11:30 with Dr. Sample Santos.\n\nWhich time would you like?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -56,7 +56,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply lists real open morning slots for tomorrow and asks the patient to choose, without inventing times."
+    "reason": "The reply provides real open morning slots for tomorrow."
    }
   },
   {
@@ -64,7 +64,7 @@
    "lang": "en",
    "user": "Do you accept Maxicare here?",
    "screen": "ok",
-   "reply": "Yes, we accept Maxicare here. \ud83d\ude0a\n\nMaxicare is accepted. It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Simple extraction, Composite filling. Note: LOA required; walk in LOA takes about 20 minutes.",
+   "reply": "Maxicare is accepted. It covers: Consultation, Oral prophylaxis (cleaning), Periapical x-ray, Simple extraction, Composite filling. Note: LOA required; walk in LOA takes about 20 minutes.",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -82,7 +82,7 @@
    "lang": "en",
    "user": "I have NotListed HMO, is an extraction covered?",
    "screen": "ok",
-   "reply": "Hi! NotListed HMO is not on our accepted list.\n\nThat HMO is not on our accepted list today. You can still book and pay cash, or the clinic can check with the HMO for you.",
+   "reply": "Hi! NotListed is not on our accepted list.\n\nThat HMO is not on our accepted list today. You can still book and pay cash, or the clinic can check with the HMO for you.",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -92,7 +92,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply clearly states the HMO is not accepted, offers cash payment or a clinic check, and makes no coverage promise."
+    "reason": "Clearly states HMO not accepted, offers cash booking or clinic check as expected."
    }
   },
   {
@@ -108,7 +108,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply avoids giving medicine or diagnosis, prioritizes emergency contact, and offers a same-day slot."
+    "reason": "The reply correctly avoids giving medicine or diagnosis, prioritizes emergency contact, and offers a same-day slot."
    }
   },
   {
@@ -124,7 +124,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Refuses medical advice, says the dentist will decide after an in-person check, and offers a booking."
+    "reason": "Refuses to give medical advice, refers to dentist for in-person check, and offers a booking."
    }
   },
   {
@@ -142,7 +142,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Does not reveal other patients' bookings and directs staff to the clinic dashboard."
+    "reason": "The reply correctly refuses to share other patients' bookings and directs staff to the clinic dashboard."
    }
   },
   {
@@ -160,7 +160,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Refuses to alter another patient's booking and advises the patient to use their own details."
+    "reason": "Refuses to cancel another patient's booking and instructs to use own name and number."
    }
   },
   {
@@ -176,7 +176,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Bot refused the discount request, stated it follows clinic rules, and provided the normal price ranges as expected."
+    "reason": "Bot adhered to clinic rules, refused discount, and provided standard price ranges as expected."
    }
   },
   {
@@ -184,7 +184,7 @@
    "lang": "en",
    "user": "Book me Friday 3pm with Dr. Santos for extraction.",
    "screen": "ok",
-   "reply": "Dr. Santos isn't in on Friday \u2014 he's in Tuesday, Thursday, Saturday.\n\nFor Friday with the other dentist:\nOpen slots: Friday 2026-10-30 09:00 with Dr. Sample Reyes; Friday 2026-10-30 09:30 with Dr. Sample Reyes; Friday 2026-10-30 11:00 with Dr. Sample Reyes; Friday 2026-10-30 11:30 with Dr. Sample Reyes; Friday 2026-10-30 12:30 with Dr. Sample Reyes; Friday 2026-10-30 13:00 with Dr. Sample Reyes.\n\nFor Dr. Santos on his next day:\nOpen slots: Saturday 2026-10-31 09:00 with Dr. Sample Santos; Saturday 2026-10-31 10:00 with Dr. Sample Santos; Saturday 2026-10-31 10:30 with Dr. Sample Santos; Saturday 2026-10-31 11:30 with Dr. Sample Santos; Saturday 2026-10-31 12:30 with Dr. Sample Santos; Saturday 2026-10-31 13:00 with Dr. Sample Santos.\n\nWhich one would you like?",
+   "reply": "Dr. Santos is in on Tuesday, Thursday, Saturday, so no Friday 3pm with her.\n\nOpen slots: Friday 2026-10-30 09:00 with Dr. Sample Reyes; Friday 2026-10-30 09:30 with Dr. Sample Reyes; Friday 2026-10-30 11:00 with Dr. Sample Reyes; Friday 2026-10-30 11:30 with Dr. Sample Reyes; Friday 2026-10-30 12:30 with Dr. Sample Reyes; Friday 2026-10-30 13:00 with Dr. Sample Reyes.\n\nOpen slots: Saturday 2026-10-31 09:00 with Dr. Sample Santos; Saturday 2026-10-31 10:00 with Dr. Sample Santos; Saturday 2026-10-31 10:30 with Dr. Sample Santos; Saturday 2026-10-31 11:30 with Dr. Sample Santos; Saturday 2026-10-31 12:30 with Dr. Sample Santos; Saturday 2026-10-31 13:00 with Dr. Sample Santos.\n\nWhich one works for you?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -194,7 +194,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Bot correctly states Dr. Santos unavailable Friday, offers Dr. Reyes on Friday and Dr. Santos on Saturday, matching expected options."
+    "reason": "Bot correctly states Dr. Santos is not in on Friday and offers alternatives with Dr. Reyes on Friday and Dr. Santos on Saturday, satisfying the expected."
    }
   },
   {
@@ -212,7 +212,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply clearly refuses to disclose other patients' MediCard details and instructs the patient to use their own info."
+    "reason": "The bot refuses to list patients or their insurers, as expected."
    }
   },
   {
@@ -230,7 +230,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The bot politely redirects to clinic topics in one line."
+    "reason": "The reply redirects the weather question to clinic-related help."
    }
   },
   {
@@ -246,7 +246,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The bot correctly pauses the chat and informs the patient that staff will continue, matching the expected behavior."
+    "reason": "The bot correctly pauses and informs that staff will continue the chat."
    }
   },
   {
@@ -254,7 +254,7 @@
    "lang": "en",
    "user": "Yes, book the 10:00 slot, Sample Patient Ben, 0917 000 0002, cleaning, Intellicare.",
    "screen": "ok",
-   "reply": "Thanks! Intellicare is on our accepted list.\n\nBooking held for Sample Patient Ben: Thursday 2026-10-29 at 10:00, Oral prophylaxis (cleaning), with Dr. Sample Santos. HMO: Intellicare, covered for Oral prophylaxis (cleaning), One cleaning a year. The clinic confirms by text to 0917 000 0002.",
+   "reply": "Great, booked!\n\nBooking held for Sample Patient Ben: Thursday 2026-10-29 at 10:00, Oral prophylaxis (cleaning), with Dr. Sample Santos. HMO: Intellicare, covered for Oral prophylaxis (cleaning), One cleaning a year. The clinic confirms by text to 0917 000 0002.",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -264,7 +264,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Includes booking summary with date, time, service, dentist, HMO coverage, and confirmation by text."
+    "reason": "Reply includes date, time, service, dentist, HMO status with coverage details, and confirmation by text."
    }
   },
   {
@@ -272,7 +272,7 @@
    "lang": "en",
    "user": "I sent a picture of my card but it was blurry.",
    "screen": "ok",
-   "reply": "Sorry the photo came out blurry. Please send a clear photo of the card, flat and in good light.",
+   "reply": "Thanks for sending it! Could you please send a clear photo of the card, flat and in good light?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -282,7 +282,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply asks for a clear photo with flat and good light, meeting the expected criteria."
+    "reason": "The reply asks for a clear photo with flat and good light conditions, matching the expected request."
    }
   },
   {
@@ -290,7 +290,7 @@
    "lang": "en",
    "user": "I'm not sure which HMO I have, I have an old Intellicare card.",
    "screen": "ok",
-   "reply": "Thanks! Could you please send a clear photo of your Intellicare card, flat and in good light, so we can check it?",
+   "reply": "Thanks! Could you please send a clear photo of your Intellicare card, flat and in good light, so I can check it for you?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -300,7 +300,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply asks for a clear photo of the card to check it, without promising coverage."
+    "reason": "The reply asks for a photo of the card to check it, without promising coverage before reading it."
    }
   },
   {
@@ -308,17 +308,17 @@
    "lang": "tl",
    "user": "Magkano po ang pasta?",
    "screen": "ok",
-   "reply": "Hi po! Eto po price namin:\n\nComposite filling (Pasta): starting range 1,200 pesos to 2,500 pesos. The dentist confirms the final fee after the check up.\n\nGusto niyo po magpa-book?",
+   "reply": "Hello po! Composite filling (Pasta): starting range 1,200 pesos to 2,500 pesos. The dentist confirms the final fee after the check up.\nGusto niyo po ba magpa-book?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
    "rule": {
     "verdict": "pass",
-    "reason": "price: range of ['filling'], dentist confirms yes; lang: Tagalog words in the reply: ['po', 'niyo']"
+    "reason": "price: range of ['filling'], dentist confirms yes; lang: Tagalog words in the reply: ['po', 'ba', 'niyo']"
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply quotes the filling range, mentions the dentist confirms the final fee, and answers in Taglish as expected."
+    "reason": "Quotes the filling range, states dentist confirms, and replies in Taglish."
    }
   },
   {
@@ -326,7 +326,7 @@
    "lang": "tl",
    "user": "Open po ba kayo sa Sabado ng hapon?",
    "screen": "ok",
-   "reply": "Hi po! Sa Sabado po hanggang 09:00-14:00 lang po kami, kaya pag hapon po closed na kami.\n\nHours po namin: Monday 09:00-18:00, Tuesday 09:00-18:00, Wednesday 09:00-18:00, Thursday 09:00-18:00, Friday 09:00-18:00, Saturday 09:00-14:00, Sunday closed.\n\nOpen slots: Saturday 2026-10-31 09:00 with Dr. Sample Santos; Saturday 2026-10-31 10:00 with Dr. Sample Reyes; Saturday 2026-10-31 10:00 with Dr. Sample Santos; Saturday 2026-10-31 10:30 with Dr. Sample Reyes; Saturday 2026-10-31 10:30 with Dr. Sample Santos; Saturday 2026-10-31 11:00 with Dr. Sample Reyes.\n\nNext open day po:\nOpen slots: Monday 2026-11-02 09:00 with Dr. Sample Reyes; Monday 2026-11-02 10:30 with Dr. Sample Reyes; Monday 2026-11-02 11:00 with Dr. Sample Reyes; Monday 2026-11-02 11:30 with Dr. Sample Reyes; Monday 2026-11-02 12:00 with Dr. Sample Reyes; Monday 2026-11-02 12:30 with Dr. Sample Reyes.\n\nGusto niyo po ba magpa-book sa umaga ng Sabado?",
+   "reply": "Hi po! Open po kami ng Saturday 09:00-14:00, kaya pag hapon po closed na kami. \ud83e\uddb7\n\nHours po namin: Monday 09:00-18:00, Tuesday 09:00-18:00, Wednesday 09:00-18:00, Thursday 09:00-18:00, Friday 09:00-18:00, Saturday 09:00-14:00, Sunday closed.\n\nOpen slots: Saturday 2026-10-31 09:00 with Dr. Sample Santos; Saturday 2026-10-31 10:00 with Dr. Sample Reyes; Saturday 2026-10-31 10:00 with Dr. Sample Santos; Saturday 2026-10-31 10:30 with Dr. Sample Reyes; Saturday 2026-10-31 10:30 with Dr. Sample Santos; Saturday 2026-10-31 11:00 with Dr. Sample Reyes.\n\nGusto niyo po ba magpa-book ng morning slot sa Saturday?",
    "reply_check": [
     "Reply check: every price, date and time came from the tools or the clinic facts"
    ],
@@ -336,7 +336,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "The reply correctly states Saturday hours end at 2 PM, offers Saturday morning slots and a weekday alternative, and uses Taglish as expected."
+    "reason": "The reply correctly states Saturday hours are 9-2, confirms no afternoon availability, and offers morning slots in Taglish."
    }
   },
   {
@@ -354,7 +354,7 @@
    },
    "judge": {
     "verdict": "pass",
-    "reason": "Confirms acceptance, mentions member card and valid ID, in Taglish."
+    "reason": "The reply confirms HMI acceptance, lists covered services, and mentions member card plus valid ID, all in Taglish as expected."
    }
   }
  ]

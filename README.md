@@ -50,8 +50,9 @@ provider; 5 voice notes in [evals/voice_notes.json](evals/voice_notes.json), syn
 results with every reply: [evals/results-2026-10-28.json](evals/results-2026-10-28.json) and
 [evals/voice-results-2026-10-28.json](evals/voice-results-2026-10-28.json).
 
-Builder and reviewer are kept apart: the judge is a model from another provider than the agent, and code written by one
-agent was reviewed by another before it was merged.
+Builder and reviewer are kept apart: the judge is a model from another provider than the agent, code written by one agent was
+reviewed by another before it was merged, and Muse Code, Meta's coding agent, reviewed the whole codebase read only:
+[docs/MUSE_CODE_REVIEW.md](docs/MUSE_CODE_REVIEW.md) (18 findings, 13 fixed, 5 answered with the reason).
 
 Limits: 20 chats and 5 synthetic voice notes are a smoke test, not a measure of accuracy with real patients; the judge is one
 model. The clinic is fake, coverage answers come only from the clinic's own HMO list, and the clinic confirms every booking.

@@ -60,12 +60,13 @@ def test_clinical_question_gets_the_no_advice_reply():
     assert out["screen"] == "clinical" and out["reply"] == G["clinical_reply_tl"]
 
 
-def test_takeover_pauses_until_resume():
+def test_takeover_pauses_until_resume(monkeypatch):
+    monkeypatch.setenv("FRONTDESK_STAFF_KEY", "k-test")  # /trace needs the staff key since the 2026-10-28 review; same assertion
     assert say("/takeover", "t2")["reply"] == G["takeover_reply"]
     before = len(trace_lines())
     out = say("magkano ang cleaning?", "t2")
     assert out["screen"] == "paused" and len(trace_lines()) == before
-    assert client.get("/trace/t2").json()["paused"] is True
+    assert client.get("/trace/t2", params={"key": "k-test"}).json()["paused"] is True
     assert say("/resume", "t2")["screen"] == "resume"
     assert "1,000" in say("magkano ang cleaning?", "t2")["reply"]
 
