@@ -9,7 +9,7 @@ Built for the Meta Global AI Developer Hackathon (startup track, "Build for Your
 New code written inside the window. Fake clinic, fake patients, fake HMO cards marked SAMPLE. No HeyDenta code, keys, prompts
 or patient data in this repo.
 
-Status: day 4, eval runner and the HMO card flow (stub mode; the live SAM 3.1 and Muse calls are written but not tried yet). See docs/SPEC.md, docs/PLAN.md and docs/CHECKS.md.
+Status: day 5, live on the Meta Model API (muse-spark-1.3 for chat and the card read, sam-3.1 for the card crop); 20 of 20 eval chats pass the rule check live. See docs/SPEC.md, docs/PLAN.md and docs/CHECKS.md.
 
 ## Run it
 
