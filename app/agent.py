@@ -29,7 +29,7 @@ def system_prompt(taglish):
     lines = [f"You are the front desk assistant of {c['name']}, {c['address']}. Phone {c['phone']}.",
              "Reply in Taglish, short and warm." if taglish else "Reply in English, short and warm.",
              "Services and starting ranges (the dentist confirms the final fee after the check up):"]
-    lines += [f"- {s['id']}: {s['name']} ({s['tl']}), {s['price_min']:,} to {s['price_max']:,} pesos, {s['minutes']} min" for s in clinic.services()]
+    lines += [f"- {s['id']}: {s['name']}{' (' + s['tl'] + ')' if taglish else ''}, {s['price_min']:,} to {s['price_max']:,} pesos, {s['minutes']} min" for s in clinic.services()]
     lines.append("Hours: " + ", ".join(f"{clinic.DAY_NAMES[k]} {v}" for k, v in c["hours"].items()) + ".")
     lines.append("Dentists: " + "; ".join(f"{d['name']} ({d['id']}) on {', '.join(d['days'])}" for d in c["dentists"]) + ".")
     lines.append("Accepted HMOs: " + ", ".join(h["insurer"] for h in clinic.CLINIC["hmo_accepted"]) + ". Use hmo_check before any coverage line; an HMO not on the list gets no coverage promise.")
@@ -64,7 +64,7 @@ def step(steps, label, detail="", ms=None):
     steps.append({"label": label, "detail": detail[:160], "ms": ms})
 
 
-def run_tool(name, args):
+def run_tool(name, args, taglish=False):
     """-> (text for the model, booking dict or None)."""
     try:
         if name == "open_slots":
@@ -72,7 +72,7 @@ def run_tool(name, args):
         if name == "hmo_check":
             return clinic.hmo_check(args.get("name_or_alias", ""), args.get("service_id"))["line"], None
         if name == "price_line":
-            return clinic.price_line(args.get("service_id", "")), None
+            return clinic.price_line(args.get("service_id", ""), taglish), None
         if name == "book":
             hmo = args.get("hmo") or (card.saved_card(model.CURRENT_CHAT.get()) or {}).get("insurer")  # the HMO from the card photo
             b = clinic.book(args["name"], args["mobile"], args["service_id"], args["date"], args["time"], args["dentist_id"], hmo)
@@ -157,7 +157,7 @@ def model_turn(chat_id, text, steps=None):
         messages.append({"role": "assistant", "content": r["content"], "tool_calls": [
             {"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": json.dumps(c["arguments"])}} for c in r["tool_calls"]]})
         for c in r["tool_calls"]:
-            result, b = run_tool(c["name"], c["arguments"])
+            result, b = run_tool(c["name"], c["arguments"], guard.is_taglish(text))
             booking = b or booking
             args = ", ".join(f"{k} {v}" for k, v in c["arguments"].items() if k not in ("name", "mobile"))
             step(steps, TOOL_LABEL.get(c["name"], c["name"]) + (f" ({args})" if args else ""), result)

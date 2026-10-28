@@ -46,11 +46,12 @@ def peso(n):
     return f"{n:,} pesos"
 
 
-def price_line(service_id):
+def price_line(service_id, taglish=False):
+    """The Tagalog service name only for a Taglish patient (2026-10-28: "(Linis ng ngipin)" in the English demo)."""
     s = service(service_id)
     if not s:
         return "That service is not on our list, so I can't quote a price. The clinic confirms it; the dentist confirms the fee after a consultation."
-    return (f"{s['name']} ({s['tl']}): starting range {peso(s['price_min'])} to {peso(s['price_max'])}. "
+    return (f"{s['name']}{' (' + s['tl'] + ')' if taglish else ''}: starting range {peso(s['price_min'])} to {peso(s['price_max'])}. "
             "The dentist confirms the final fee after the check up.")
 
 

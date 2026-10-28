@@ -123,3 +123,9 @@ def test_past_times_today_are_never_offered_or_booked(monkeypatch):
     assert offered and all(s["time"] > late.strftime("%H:%M") for s in offered)
     early = next(s for s in day["slots"] if s["time"] <= late.strftime("%H:%M"))
     assert not clinic.slot_is_open(day["date"], early["time"], early["dentist"])
+
+
+def test_tagalog_service_name_only_for_taglish_patients():
+    # 2026-10-28: the English demo showed "Oral prophylaxis (cleaning) (Linis ng ngipin)"
+    s = clinic.services()[0]
+    assert s["tl"] not in clinic.price_line(s["id"]) and s["tl"] in clinic.price_line(s["id"], taglish=True)
