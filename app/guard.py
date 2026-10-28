@@ -29,6 +29,12 @@ def reply_for(kind):
     return G.get(kind + "_reply", "")
 
 
+# words that are also English ("may", "sa" in names) only count with a second Tagalog word (2026-10-28: "May I book"
+# got a Taglish reply in the English demo)
+AMBIGUOUS_WORDS = {"may", "sa", "ito", "mo", "ko", "ba", "ano", "para", "kung"}
+
+
 def is_taglish(text):
     words = set(w.strip(".,?!") for w in (text or "").lower().split())
-    return len(words & TAGLISH_WORDS) >= 1
+    hits = words & TAGLISH_WORDS
+    return bool(hits - AMBIGUOUS_WORDS) or len(hits) >= 2
