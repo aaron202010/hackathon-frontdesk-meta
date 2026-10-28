@@ -27,6 +27,8 @@ ignored by git).
 
 ## Eval
 
+Voice notes 2026-10-28: 5 of 5 pass (transcribed by muse-voice-transcribe-1.0, then the same rule checks; live mode)
+
 Last run 2026-10-28: 20 of 20 chats pass the rule check (live mode)
 
 ## About the data

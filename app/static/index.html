@@ -58,6 +58,12 @@
   .card-btn:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
   .card-btn svg { width: 16px; height: 16px; }
   .card-btn input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  button.card-btn { background: none; font: 500 13px Inter, sans-serif; }
+  .card-btn.rec { color: var(--alert); border-color: var(--alert); }
+  .card-btn .timer { display: none; font-variant-numeric: tabular-nums; }
+  .card-btn.rec .timer { display: inline; }
+  .card-btn.rec .wide { display: none; }
+  .msg.voice .vtag { display: block; margin-top: 4px; font-size: 11.5px; opacity: .8; }
   #t { flex: 1; min-width: 0; border: 1px solid transparent; background: var(--bubble); border-radius: 999px; padding: 10px 16px; font: 15px Inter, sans-serif; color: var(--ink); caret-color: var(--blue); }
   #t::placeholder { color: var(--muted); }
   #t:focus { outline: none; border-color: var(--blue); background: var(--surface); }
@@ -117,7 +123,7 @@
     <button id="panelBtn" class="hbtn" type="button" title="Show what the agent did" aria-controls="panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Steps</button>
   </header>
   <div id="log" aria-live="polite"><div class="msg bot">Hello! Bright Smile Dental Clinic here. Prices, hours, HMO cards, bookings: ask away.</div></div>
-  <form id="f"><label class="card-btn" title="Send a photo of an HMO card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg><span class="wide">HMO card</span><input id="card" type="file" accept="image/*" aria-label="Send a photo of an HMO card"></label><input id="t" autocomplete="off" placeholder="Message Bright Smile" maxlength="2000" aria-label="Message"><button type="submit">Send</button></form>
+  <form id="f"><label class="card-btn" title="Send a photo of an HMO card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg><span class="wide">HMO card</span><input id="card" type="file" accept="image/*" aria-label="Send a photo of an HMO card"></label><button id="mic" class="card-btn" type="button" title="Record a voice note" aria-label="Record a voice note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span class="wide">Voice</span><span class="timer">0:00</span></button><input id="t" autocomplete="off" placeholder="Message Bright Smile" maxlength="2000" aria-label="Message"><button type="submit">Send</button></form>
 </main>
 <aside class="panel" id="panel" aria-label="Agent steps">
   <div class="panel-head">
@@ -218,6 +224,38 @@
       add(j.reply || j.detail || "(no reply)", "bot");
     } catch (err) { add("Could not reach the server.", "sys"); }
   });
+  // voice note: tap to record, tap again to send; Meta's speech to text turns it into the same turn as a typed message
+  const micBtn = document.getElementById("mic"), micTimer = micBtn.querySelector(".timer");
+  let rec = null, recChunks = [], recTick = null;
+  micBtn.addEventListener("click", async () => {
+    if (rec && rec.state === "recording") { rec.stop(); return; }
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) { add("The microphone is not available here. Please type your message.", "sys"); return; }
+    recChunks = []; rec = new MediaRecorder(stream);
+    rec.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); };
+    rec.onstop = () => {
+      stream.getTracks().forEach(t => t.stop()); clearInterval(recTick); micBtn.classList.remove("rec"); micBtn.setAttribute("aria-label", "Record a voice note");
+      const blob = new Blob(recChunks, { type: rec.mimeType || "audio/webm" });
+      if (blob.size > 1500) sendVoice(blob);
+    };
+    rec.start(); const t0 = Date.now(); micBtn.classList.add("rec"); micBtn.setAttribute("aria-label", "Stop and send the voice note"); micTimer.textContent = "0:00";
+    recTick = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); micTimer.textContent = "0:" + String(s).padStart(2, "0"); if (s >= 59) rec.stop(); }, 250);
+  });
+  async function sendVoice(blob) {
+    const d = document.createElement("div"); d.className = "msg me voice"; d.textContent = "Voice note…"; log.appendChild(d); log.scrollTop = log.scrollHeight;
+    const form = new FormData(); form.append("chat_id", chatId); form.append("file", blob, "note." + (blob.type.includes("mp4") ? "mp4" : blob.type.includes("ogg") ? "ogg" : "webm"));
+    try {
+      const t0 = performance.now();
+      const r = await fetch("/voice", { method: "POST", body: form });
+      const j = await r.json();
+      d.textContent = j.transcript ? "“" + j.transcript + "”" : "Voice note";
+      const tag = document.createElement("span"); tag.className = "vtag"; tag.textContent = "Voice note, transcribed by Meta speech to text"; d.appendChild(tag);
+      addSteps("You: sent a voice note", j.steps, performance.now() - t0);
+      add(j.reply || j.detail || "(no reply)", "bot");
+      if (j.screen && j.screen !== "ok") add(SCREEN_NOTE[j.screen] || j.screen, "sys");
+    } catch (e) { add("Could not reach the server.", "sys"); }
+  }
   document.getElementById("f").addEventListener("submit", e => { e.preventDefault(); const v = input.value.trim(); if (!v) return; input.value = ""; send(v); });
   document.getElementById("takeover").addEventListener("click", () => send("/takeover", true));
 </script>

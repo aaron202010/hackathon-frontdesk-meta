@@ -1,15 +1,17 @@
-"""FastAPI entry: POST /chat, POST /card, GET /trace/{chat_id}, GET / (the chat page)."""
+"""FastAPI entry: POST /chat, POST /card, POST /voice, GET /trace/{chat_id}, GET / (the chat page)."""
 import os, time
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
-from app import agent, card, clinic, model
+from app import agent, card, clinic, model, voice
 
 app = FastAPI(title="Front Desk on Meta models")
 STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 MAX_PHOTO = 10 * 1024 * 1024
 BLURRY_LINE = "Please send a clearer photo of the card, flat, in good light, or our staff can check it."
 MIN_CONFIDENCE = 0.5
+MAX_AUDIO = 10 * 1024 * 1024
+NOT_HEARD_LINE = "Sorry, I couldn't hear that. Please send the voice note again or type your message."
 
 
 class ChatIn(BaseModel):
@@ -60,6 +62,29 @@ def card_photo(file: UploadFile = File(...), chat_id: str = Form(min_length=1, m
     agent.save_turn(chat_id, "user", "[sent a photo of an HMO card]", "card")
     agent.save_turn(chat_id, "assistant", reply, "card")
     return {"reply": reply, "card": fields, "hmo": hmo, "box": box, "steps": steps}
+
+
+@app.post("/voice")
+def voice_note(file: UploadFile = File(...), chat_id: str = Form(min_length=1, max_length=64)):
+    """Voice note in: Meta's speech to text, then the same turn as a typed message (same screen, tools and steps)."""
+    data = file.file.read(MAX_AUDIO + 1)
+    if len(data) > MAX_AUDIO:
+        raise HTTPException(413, "voice note too large")
+    if agent.is_paused(chat_id):
+        return {"transcript": "", "reply": clinic.CLINIC["guardrails"]["paused_reply"], "screen": "paused", "steps": []}
+    t0 = time.time()
+    try:
+        model.CURRENT_CHAT.set(chat_id)
+        text = voice.transcribe(data, hint=file.filename)
+    except ValueError:
+        raise HTTPException(400, "not audio")
+    except model.ModelError:
+        return {"transcript": "", "reply": clinic.CLINIC["guardrails"]["model_error_reply"], "screen": "error", "steps": []}
+    heard = {"label": f"{voice.ASR_MODEL} transcribed the voice note", "detail": text[:160], "ms": int((time.time() - t0) * 1000)}
+    if not text:
+        return {"transcript": "", "reply": NOT_HEARD_LINE, "screen": "ok", "steps": [heard]}
+    out = agent.handle(chat_id, text[:2000])
+    return {"transcript": text, **out, "steps": [heard] + out.get("steps", [])}
 
 
 @app.get("/trace/{chat_id}")
