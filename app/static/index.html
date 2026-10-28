@@ -3,82 +3,129 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bright Smile Dental Clinic</title>
+<title>Bright Smile Dental Clinic · Front desk agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --blue: #0084ff; --bubble: #e4e6eb; --bg: #ffffff; --ink: #050505; --muted: #65676b; }
+  :root {
+    --page: #eef0f4; --surface: #ffffff; --panel: #f8f9fb; --line: #e3e6eb; --line-strong: #d3d7de;
+    --ink: #111418; --ink-2: #3d434c; --muted: #66707c;
+    --blue: #0866ff; --blue-ink: #ffffff; --blue-soft: #e8f0ff;
+    --bubble: #f0f2f5; --guard: #0f7b4b; --guard-soft: #e4f5ec; --model: #0866ff; --tool: #6b4fd8; --tool-soft: #efeafd;
+    --alert: #c4321b;
+    --radius: 14px;
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  .app { max-width: 480px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; }
-  header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #e4e6eb; }
-  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); color: #fff; display: grid; place-items: center; font-weight: 700; }
-  header .name { font-weight: 600; }
-  header .sub { font-size: 12px; color: var(--muted); }
-  header button { margin-left: auto; border: 1px solid #ccd0d5; background: #fff; border-radius: 16px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
-  #log { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
-  .msg { flex-shrink: 0; max-width: 78%; padding: 8px 12px; border-radius: 18px; white-space: pre-wrap; word-wrap: break-word; }
-  .me { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
-  .bot { align-self: flex-start; background: var(--bubble); border-bottom-left-radius: 4px; }
-  .sys { align-self: center; font-size: 12px; color: var(--muted); }
-  .photo { position: relative; padding: 0; overflow: hidden; background: none; width: 70%; max-width: 70%; flex-shrink: 0; }
-  .photo img { display: block; width: 100%; border-radius: 18px; }
-  .photo .box { position: absolute; border: 3px solid #f02849; border-radius: 6px; box-sizing: border-box; display: none; }
-  .photo .tag { position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,.65); color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; display: none; }
-  .read { flex-shrink: 0; align-self: flex-start; background: #fff; border: 1px solid #ccd0d5; border-radius: 12px; padding: 8px 12px; font-size: 13px; line-height: 1.5; }
-  .read b { display: block; font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-  form { display: flex; gap: 8px; padding: 10px 16px; border-top: 1px solid #e4e6eb; }
-  input { flex: 1; border: none; background: #f0f2f5; border-radius: 20px; padding: 10px 14px; font-size: 15px; }
-  input:focus { outline: 2px solid var(--blue); }
-  .card-btn { align-self: center; border: 1px solid #ccd0d5; border-radius: 16px; padding: 6px 10px; font-size: 12px; cursor: pointer; white-space: nowrap; }
-  .card-btn input { display: none; }
-  form button { border: none; background: none; color: var(--blue); font-weight: 600; cursor: pointer; }
-  /* agent panel (2026-10-28): what the agent did on each message, next to the chat */
-  .shell { display: flex; justify-content: center; height: 100dvh; }
-  .shell .app { margin: 0; flex: 0 1 480px; border-right: 1px solid #e4e6eb; }
-  .panel { flex: 0 1 400px; display: flex; flex-direction: column; background: #f7f8fa; }
-  .panel h2 { margin: 0; padding: 14px 16px 4px; font-size: 15px; }
-  .panel .hint { padding: 0 16px 10px; font-size: 12px; color: var(--muted); border-bottom: 1px solid #e4e6eb; }
-  #steps { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
-  .turn { background: #fff; border: 1px solid #e4e6eb; border-radius: 10px; padding: 10px 12px; }
-  .turn .q { font-size: 12px; color: var(--muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .turn ol { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.45; }
-  .turn li { margin: 4px 0; }
-  .turn .d { display: block; font-size: 12px; color: var(--muted); }
-  .turn .ms { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .turn .tot { margin-top: 6px; font-size: 11px; color: var(--muted); }
-  #panelBtn { display: none; }
-  @media (max-width: 900px) {
-    .shell { display: block; }
-    .shell .app { width: 100%; max-width: 100%; border-right: none; }
-    header { gap: 8px; padding: 10px 12px; }
-    header .avatar { width: 32px; height: 32px; flex-shrink: 0; }
-    header > div:nth-child(2) { min-width: 0; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.45 Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #cfe0ff; color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  * { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+
+  .shell { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 420px); justify-content: center; height: 100dvh; padding: 24px; gap: 0; }
+  .app, .panel { background: var(--surface); border: 1px solid var(--line); min-height: 0; }
+  .app { display: flex; flex-direction: column; border-radius: var(--radius) 0 0 var(--radius); }
+  .panel { display: flex; flex-direction: column; background: var(--panel); border-left: none; border-radius: 0 var(--radius) var(--radius) 0; }
+
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: var(--blue-ink); display: grid; place-items: center; font-weight: 700; font-size: 14px; letter-spacing: .02em; flex-shrink: 0; position: relative; }
+  .avatar::after { content: ""; position: absolute; right: 0; bottom: 0; width: 11px; height: 11px; border-radius: 50%; background: #31a24c; border: 2px solid var(--surface); }
+  .who { min-width: 0; }
+  header .name { font-weight: 600; font-size: 15px; line-height: 1.25; }
+  header .sub { font-size: 12.5px; color: var(--muted); }
+  .hbtn { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 7px 12px; font: 500 12.5px/1 Inter, sans-serif; cursor: pointer; white-space: nowrap; transition: background .15s, border-color .15s; }
+  .hbtn:hover { background: var(--bubble); }
+  .hbtn svg { width: 14px; height: 14px; }
+  #panelBtn { display: none; margin-left: 0; }
+
+  #log { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 18px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .msg { flex-shrink: 0; max-width: 80%; padding: 9px 13px; border-radius: 18px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; }
+  .me { align-self: flex-end; background: var(--blue); color: var(--blue-ink); border-bottom-right-radius: 5px; margin-top: 8px; }
+  .bot { align-self: flex-start; background: var(--bubble); color: var(--ink); border-bottom-left-radius: 5px; margin-top: 8px; }
+  .sys { align-self: center; font-size: 12px; color: var(--muted); background: transparent; padding: 4px 0; }
+  .photo { position: relative; padding: 0; overflow: hidden; background: none; width: 68%; max-width: 68%; flex-shrink: 0; border-radius: 18px; border-bottom-right-radius: 5px; }
+  .photo img { display: block; width: 100%; }
+  .photo .box { position: absolute; border: 3px solid #ff3b5c; border-radius: 6px; box-shadow: 0 0 0 9999px rgba(10, 12, 16, .28); display: none; }
+  .photo .tag { position: absolute; left: 10px; bottom: 10px; background: rgba(17, 20, 24, .78); color: #fff; font-size: 11.5px; font-weight: 500; padding: 4px 9px; border-radius: 999px; display: none; }
+  .read { flex-shrink: 0; align-self: flex-start; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 4px; margin-top: 8px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; padding: 10px 14px; font-size: 13.5px; }
+  .read > div { display: contents; }
+  .read b { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; align-self: center; }
+
+  form#f { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--line); }
+  .card-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 500; color: var(--ink-2); cursor: pointer; white-space: nowrap; transition: background .15s; }
+  .card-btn:hover { background: var(--bubble); }
+  .card-btn:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .card-btn svg { width: 16px; height: 16px; }
+  .card-btn input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  #t { flex: 1; min-width: 0; border: 1px solid transparent; background: var(--bubble); border-radius: 999px; padding: 10px 16px; font: 15px Inter, sans-serif; color: var(--ink); caret-color: var(--blue); }
+  #t::placeholder { color: var(--muted); }
+  #t:focus { outline: none; border-color: var(--blue); background: var(--surface); }
+  form#f button[type=submit] { border: none; background: var(--blue); color: var(--blue-ink); font: 600 14px Inter, sans-serif; border-radius: 999px; padding: 10px 16px; cursor: pointer; transition: background .15s; }
+  form#f button[type=submit]:hover { background: #0656d6; }
+
+  .panel-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+  .panel h2 { margin: 0; font-size: 15px; font-weight: 600; }
+  .panel .hint { margin-top: 4px; font-size: 12.5px; color: var(--muted); }
+  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot.guard { background: var(--guard); } .dot.model { background: var(--model); } .dot.tool { background: var(--tool); }
+  #steps { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .empty { margin: auto 0; text-align: center; color: var(--muted); font-size: 13px; padding: 24px 8px; }
+  .turn { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; animation: rise .32s cubic-bezier(.16, 1, .3, 1); }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .turn .q { font-size: 13px; color: var(--ink-2); font-weight: 500; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .turn ol { list-style: none; margin: 0; padding: 0; position: relative; }
+  .turn ol::before { content: ""; position: absolute; left: 3.5px; top: 8px; bottom: 8px; width: 1px; background: var(--line-strong); }
+  .turn li { position: relative; display: grid; grid-template-columns: 8px 1fr auto; column-gap: 12px; align-items: baseline; padding: 4px 0; font-size: 13.5px; line-height: 1.4; }
+  .turn li .dot { position: relative; top: -1px; box-shadow: 0 0 0 3px var(--surface); }
+  .turn .lab { color: var(--ink); }
+  .turn .ms { font: 500 11.5px/1.4 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .turn .d { grid-column: 2 / 4; font-size: 12.5px; color: var(--muted); margin-top: 2px; overflow-wrap: anywhere; }
+  .turn .tot { display: flex; justify-content: space-between; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+  .turn .tot b { font: 500 12px "JetBrains Mono", ui-monospace, monospace; color: var(--ink-2); }
+
+  @media (prefers-reduced-motion: reduce) { .turn { animation: none; } }
+  @media (max-width: 960px) {
+    .shell { display: block; padding: 0; height: 100dvh; }
+    .app { height: 100dvh; border: none; border-radius: 0; }
+    header { padding: 10px 12px; gap: 10px; }
+    .avatar { width: 34px; height: 34px; font-size: 12px; }
     header .name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    header button { padding: 5px 8px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
-    form { padding: 10px 12px; }
-    input { min-width: 0; }
-    .panel { display: none; position: fixed; inset: 74px 0 0 0; z-index: 5; }
+    header .sub { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hbtn { padding: 6px 10px; font-size: 12px; }
+    .hbtn .wide { display: none; }
+    #panelBtn { display: inline-flex; }
+    .panel { display: none; position: fixed; left: 0; right: 0; bottom: 0; top: 56px; z-index: 5; border: none; border-top: 1px solid var(--line); border-radius: 0; }
     .panel.open { display: flex; }
-    #panelBtn { display: inline-block; margin-left: 6px; }
-    header button#takeover { margin-left: auto; }
+    #log { padding: 14px 12px 10px; }
+    form#f { padding: 10px 10px; gap: 6px; }
+    .card-btn { padding: 8px 10px; }
+    .card-btn .wide { display: none; }
+    form#f button[type=submit] { padding: 10px 14px; }
   }
 </style>
 </head>
 <body>
 <div class="shell">
-<div class="app">
+<main class="app">
   <header>
-    <div class="avatar">BS</div>
-    <div><div class="name">Bright Smile Dental Clinic</div><div class="sub">Sample clinic. Fake data only.</div></div>
-    <button id="takeover" type="button" title="Pause the bot, staff continues">Staff takeover</button>
-    <button id="panelBtn" type="button" title="Show what the agent did">Agent steps</button>
+    <div class="avatar" aria-hidden="true">BS</div>
+    <div class="who"><div class="name">Bright Smile Dental Clinic</div><div class="sub">Sample clinic · fake data only</div></div>
+    <button id="takeover" class="hbtn" type="button" title="Pause the bot, staff continues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Staff<span class="wide"> takeover</span></span></button>
+    <button id="panelBtn" class="hbtn" type="button" title="Show what the agent did" aria-controls="panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Steps</button>
   </header>
-  <div id="log"><div class="msg bot">Hello! Bright Smile Dental Clinic here. Prices, hours, HMO cards, bookings: ask away.</div></div>
-  <form id="f"><label class="card-btn">Send HMO card<input id="card" type="file" accept="image/*"></label><input id="t" autocomplete="off" placeholder="Aa" maxlength="2000"><button type="submit">Send</button></form>
-</div>
+  <div id="log" aria-live="polite"><div class="msg bot">Hello! Bright Smile Dental Clinic here. Prices, hours, HMO cards, bookings: ask away.</div></div>
+  <form id="f"><label class="card-btn" title="Send a photo of an HMO card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg><span class="wide">HMO card</span><input id="card" type="file" accept="image/*" aria-label="Send a photo of an HMO card"></label><input id="t" autocomplete="off" placeholder="Message Bright Smile" maxlength="2000" aria-label="Message"><button type="submit">Send</button></form>
+</main>
 <aside class="panel" id="panel" aria-label="Agent steps">
-  <h2>What the agent did</h2>
-  <div class="hint">Every message: the safety screen, each Meta model call, each tool and its result.</div>
-  <div id="steps"><div class="hint" style="border:none;padding:0">Send a message to see the steps.</div></div>
+  <div class="panel-head">
+    <h2>What the agent did</h2>
+    <div class="hint">Every message, step by step, with timings.</div>
+    <div class="legend"><span><i class="dot guard"></i>Safety screen</span><span><i class="dot model"></i>Meta model</span><span><i class="dot tool"></i>Tool</span></div>
+  </div>
+  <div id="steps"><div class="empty">Send a message or an HMO card photo to see the steps.</div></div>
 </aside>
 </div>
 <script>
@@ -115,20 +162,31 @@
     log.appendChild(d); log.scrollTop = log.scrollHeight;
   }
   const stepsEl = document.getElementById("steps");
+  function kindOf(label) {
+    if (/muse|stub model|SAM 3\.1|read the card/i.test(label)) return "model";
+    if (/^(Screened|Emergency|Medical|Prompt injection|Staff|Card too)/.test(label)) return "guard";
+    return "tool";
+  }
   function secs(ms) { return ms == null ? "" : (ms / 1000).toFixed(1) + " s"; }
   function addSteps(asked, steps, wallMs) {
     if (!steps || !steps.length) return;
-    if (stepsEl.firstElementChild && stepsEl.firstElementChild.classList.contains("hint")) stepsEl.innerHTML = "";
+    const empty = stepsEl.querySelector(".empty"); if (empty) empty.remove();
     const t = document.createElement("div"); t.className = "turn";
     const q = document.createElement("div"); q.className = "q"; q.textContent = asked;
     const ol = document.createElement("ol");
     steps.forEach(s => {
-      const li = document.createElement("li"); li.textContent = s.label;
-      if (s.ms != null) { const m = document.createElement("span"); m.className = "ms"; m.textContent = " · " + secs(s.ms); li.appendChild(m); }
+      const li = document.createElement("li");
+      const dot = document.createElement("i"); dot.className = "dot " + kindOf(s.label);
+      const lab = document.createElement("span"); lab.className = "lab"; lab.textContent = s.label;
+      const m = document.createElement("span"); m.className = "ms"; m.textContent = s.ms != null ? secs(s.ms) : "";
+      li.append(dot, lab, m);
       if (s.detail) { const d = document.createElement("span"); d.className = "d"; d.textContent = s.detail; li.appendChild(d); }
       ol.appendChild(li);
     });
-    const tot = document.createElement("div"); tot.className = "tot"; tot.textContent = "Reply in " + secs(wallMs);
+    const tot = document.createElement("div"); tot.className = "tot";
+    const tl = document.createElement("span"); tl.textContent = "Reply on screen in";
+    const tv = document.createElement("b"); tv.textContent = secs(wallMs);
+    tot.append(tl, tv);
     t.append(q, ol, tot); stepsEl.appendChild(t); stepsEl.scrollTop = stepsEl.scrollHeight;
   }
   document.getElementById("panelBtn").addEventListener("click", () => document.getElementById("panel").classList.toggle("open"));
