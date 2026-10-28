@@ -9,3 +9,5 @@ logs/
 data/frontdesk.db
 .pytest_cache/
 video/
+.impeccable/
+.claude/
