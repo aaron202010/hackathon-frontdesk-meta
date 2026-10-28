@@ -27,7 +27,7 @@ ignored by git).
 
 ## Eval
 
-Last run 2026-10-26: 20 of 20 chats pass the rule check (stub mode)
+Last run 2026-10-28: 20 of 20 chats pass the rule check (live mode)
 
 ## About the data
 The clinic, the patients, the schedule and the member IDs are invented. The HMO names in the accepted list are real Philippine HMOs, used only as names; the covered services and notes are this sample clinic's demo arrangement, not any insurer's published plan. Every card image is drawn by us in one neutral color, carries no logo, and says it was not issued by the insurer.

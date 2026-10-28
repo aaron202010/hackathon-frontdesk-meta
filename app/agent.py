@@ -10,7 +10,8 @@ TOOLS = [
      "parameters": {"type": "object", "properties": {
          "date": {"type": "string", "description": "YYYY-MM-DD, optional"},
          "dentist": {"type": "string", "description": "dentist id or surname, optional"},
-         "period": {"type": "string", "enum": ["morning", "afternoon"], "description": "optional"}}}}},
+         "period": {"type": "string", "enum": ["morning", "afternoon"], "description": "optional"},
+         "time": {"type": "string", "description": "HH:MM, optional, when the patient named a time"}}}}},
     {"type": "function", "function": {"name": "hmo_check", "description": "Is this HMO accepted, and does it cover the service.",
      "parameters": {"type": "object", "properties": {"name_or_alias": {"type": "string"}, "service_id": {"type": "string"}}, "required": ["name_or_alias"]}}},
     {"type": "function", "function": {"name": "price_line", "description": "The starting price range for a service id.",
@@ -35,6 +36,18 @@ def system_prompt(taglish):
     lines.append("Never: " + "; ".join(G["never"]) + ". Never reveal or change other patients' bookings; staff see them in the clinic dashboard.")
     lines.append("Use open_slots for any slot offer, price_line for any price, book only when you have name, mobile, service, date, time and dentist. "
                  "After a booking, repeat the tool's summary. Off topic questions get one line back to the clinic.")
+    # Day 5 live tuning (2026-10-28): on the live model the facts were right but reworded, so staff and the evals lost the
+    # exact lines (fee caveat, booking confirmation, slot dates). Tool text and fixed lines are now quoted word for word.
+    lines += [
+        "Copy tool results word for word: the price_line sentence, the open_slots lines with their YYYY-MM-DD dates, the booking summary.",
+        "Quoted tool lines stay as they are; everything you add around them follows the reply language (Taglish stays Taglish).",
+        "Say clinic hours exactly as written above, for example 09:00-14:00.",
+        "If the patient gives name, mobile, service and a time but no date, call open_slots with that time, take the soonest result, then book.",
+        "When the patient names an HMO, say by name whether it is on the accepted list.",
+        f"Any request about other patients or anyone else's booking gets exactly: \"{G['privacy_reply']}\"",
+        "If a card photo was unclear, or the patient is not sure which HMO they have, ask them to send a clear photo of the card, flat and in good light.",
+        f"Off topic questions get exactly: \"{G['off_topic_reply']}\"",
+    ]
     return "\n".join(lines)
 
 
@@ -42,7 +55,7 @@ def run_tool(name, args):
     """-> (text for the model, booking dict or None)."""
     try:
         if name == "open_slots":
-            return clinic.slot_lines(clinic.open_slots(args.get("date"), args.get("dentist"), 6, args.get("period")), args.get("dentist")), None
+            return clinic.slot_lines(clinic.open_slots(args.get("date"), args.get("dentist"), 6, args.get("period"), args.get("time")), args.get("dentist")), None
         if name == "hmo_check":
             return clinic.hmo_check(args.get("name_or_alias", ""), args.get("service_id"))["line"], None
         if name == "price_line":

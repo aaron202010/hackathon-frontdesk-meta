@@ -9,7 +9,7 @@ C = json.load(open(os.path.join(ROOT, 'data', 'clinic.json')))
 
 # 1. schedule
 rng = random.Random(C['schedule']['seed'])
-start = datetime.date(2026, 10, 27)
+start = datetime.date.today()  # was a fixed 2026-10-27; open_slots now skips past days, so the week starts today
 days = []
 for i in range(7):
     d = start + datetime.timedelta(days=i)

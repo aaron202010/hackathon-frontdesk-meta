@@ -91,19 +91,23 @@ def booked_keys(con=None):
     return {(r["date"], r["time"], r["dentist_id"]) for r in con.execute("SELECT date, time, dentist_id FROM bookings")}
 
 
-def open_slots(date=None, dentist=None, limit=6, period=None):
-    """Open slots from the schedule minus bookings in the store. period: 'morning' (before 12:00) or 'afternoon'."""
+def open_slots(date=None, dentist=None, limit=6, period=None, time=None):
+    """Open slots from the schedule minus bookings in the store. period: 'morning' (before 12:00) or 'afternoon';
+    time: one HH:MM. Days before today are skipped (live run 2026-10-28 offered yesterday's slots)."""
+    today = datetime.date.today().isoformat()
     did = dentist_id_for(dentist)
     taken = booked_keys()
     names = {d["id"]: d["name"] for d in CLINIC["clinic"]["dentists"]}
     out = []
     for day in SCHEDULE["days"]:
-        if date and day["date"] != str(date):
+        if date and day["date"] != str(date) or day["date"] < today:
             continue
         for s in day["slots"]:
             if s["taken"] or (did and s["dentist"] != did) or (day["date"], s["time"], s["dentist"]) in taken:
                 continue
             if period == "morning" and s["time"] >= "12:00" or period == "afternoon" and s["time"] < "12:00":
+                continue
+            if time and s["time"] != time:
                 continue
             out.append({"date": day["date"], "day": DAY_NAMES[day["day"]], "time": s["time"],
                         "dentist_id": s["dentist"], "dentist": names[s["dentist"]]})
