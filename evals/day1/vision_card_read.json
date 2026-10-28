@@ -1,8 +1,8 @@
 {
  "endpoint": "/responses",
  "model": "muse-spark-1.3",
- "ms": 1660,
- "status": 404,
+ "ms": 5328,
+ "status": 200,
  "request": {
   "model": "muse-spark-1.3",
   "input": [
@@ -23,7 +23,60 @@
   ]
  },
  "response": {
-  "http_error": 404,
-  "body": "{\"error\":{\"code\":\"model_not_found\",\"message\":\"The requested model was not found.\",\"param\":null,\"type\":\"invalid_request_error\"}}"
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "top_p": 1.0,
+  "service_tier": "auto",
+  "model": "muse-spark-1.3",
+  "reasoning": {
+   "effort": "high"
+  },
+  "background": false,
+  "tools": [],
+  "tool_choice": "auto",
+  "truncation": "disabled",
+  "id": "resp_6ae14479b18563c92a804678",
+  "object": "response",
+  "status": "completed",
+  "created_at": 1793148025.0,
+  "completed_at": 1793148025.0,
+  "error": null,
+  "incomplete_details": null,
+  "output": [
+   {
+    "type": "reasoning",
+    "id": "rs_6ae14479b18563c92a804678:rs_d92eeeb3-c79f-48e2-8cb6-6297bacae35a",
+    "summary": [],
+    "status": "completed"
+   },
+   {
+    "type": "message",
+    "id": "msg_d7a3b191-a2d4-4e39-b223-64171fc51405",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "output_text",
+      "text": "{\"insurer\": \"MEDICARD PLUS (SAMPLE)\", \"member_name\": \"JUAN DELA CRUZ\", \"member_id\": \"0099-1234-5678\", \"valid_thru\": \"12/2027\", \"plan\": \"DENTAL + OUTPATIENT\"}",
+      "annotations": [],
+      "logprobs": []
+     }
+    ],
+    "status": "completed"
+   }
+  ],
+  "instructions": null,
+  "usage": {
+   "input_tokens": 1866,
+   "input_tokens_details": {
+    "cached_tokens": 0
+   },
+   "output_tokens": 1125,
+   "output_tokens_details": {
+    "reasoning_tokens": 1055
+   },
+   "total_tokens": 2991
+  },
+  "parallel_tool_calls": true,
+  "store": true
  }
 }

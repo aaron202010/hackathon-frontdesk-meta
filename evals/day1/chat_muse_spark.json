@@ -1,8 +1,8 @@
 {
  "endpoint": "/chat/completions",
  "model": "muse-spark-1.3",
- "ms": 1157,
- "status": 404,
+ "ms": 2726,
+ "status": 200,
  "request": {
   "model": "muse-spark-1.3",
   "temperature": 0.3,
@@ -19,7 +19,32 @@
   ]
  },
  "response": {
-  "http_error": 404,
-  "body": "{\"error\":{\"code\":\"model_not_found\",\"message\":\"The requested model was not found.\",\"param\":null,\"type\":\"invalid_request_error\"}}"
+  "id": "chatcmpl-01a17ff3-65ae-759b-a9d9-914889ab7e5a",
+  "choices": [
+   {
+    "finish_reason": "length",
+    "index": 0,
+    "message": {
+     "content": null,
+     "refusal": null,
+     "role": "assistant"
+    },
+    "logprobs": null
+   }
+  ],
+  "created": 1793148020,
+  "model": "muse-spark-1.3",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 300,
+   "prompt_tokens": 120,
+   "total_tokens": 420,
+   "completion_tokens_details": {
+    "reasoning_tokens": 298
+   },
+   "prompt_tokens_details": {
+    "cached_tokens": 0
+   }
+  }
  }
 }

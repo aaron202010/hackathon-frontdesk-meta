@@ -48,7 +48,10 @@ def _trace(out):
 
 
 def _live(messages, tools, response_format):
-    body = {"model": model_id(), "messages": messages, "temperature": 0.3, "max_tokens": 400}
+    # muse-spark reasons before it answers: at 400 max_tokens the reasoning used the whole budget and the
+    # reply came back empty (day 1 live call, 2026-10-28). Low effort plus headroom answers in about 2 s.
+    body = {"model": model_id(), "messages": messages, "temperature": 0.3, "max_tokens": 1500,
+            "reasoning_effort": "low"}
     if tools:
         body.update(tools=tools, tool_choice="auto")
     if response_format:
