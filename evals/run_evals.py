@@ -175,10 +175,11 @@ def run_chat(chat):
     return {"screen": out["screen"], "reply": out["reply"], "paused": agent.is_paused(chat_id)}
 
 
-def update_readme(date, passed, total, mode):
+def update_readme(date, passed, total, mode, judged=None):
     path = os.path.join(ROOT, "README.md")
     text = open(path).read()
-    line = f"Last run {date}: {passed} of {total} chats pass the rule check ({mode} mode)"
+    judge_part = f", {judged} of {total} pass the judge ({JUDGE_MODEL})" if judged is not None else ""
+    line = f"Last run {date}: {passed} of {total} chats pass the rule check{judge_part} ({mode} mode)"
     if re.search(r"^Last run .*$", text, re.M):
         text = re.sub(r"^Last run .*$", line, text, count=1, flags=re.M)
     elif "## Eval" in text:
@@ -213,11 +214,14 @@ def main():
         print("judge skipped" + ("" if args.judge else " (no --judge flag)") + ("" if not args.judge else ": no OPENROUTER_API_KEY in the environment"))
     passed = sum(r["rule"]["verdict"] == "pass" for r in rows)
     print(f"pass rate: {passed} of {len(rows)} (rules)")
+    judged = sum(r["judge"]["verdict"] == "pass" for r in rows) if key else None
+    if key:
+        print(f"judge: {judged} of {len(rows)} pass ({JUDGE_MODEL})")
     date = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "evals", f"results-{date}.json"), "w") as f:
         json.dump({"date": date, "mode": mode, "judge": JUDGE_MODEL if key else None, "passed": passed, "total": len(rows), "chats": rows}, f, indent=1)
     if not args.no_readme:
-        update_readme(date, passed, len(rows), mode)
+        update_readme(date, passed, len(rows), mode, judged)
 
 
 if __name__ == "__main__":
