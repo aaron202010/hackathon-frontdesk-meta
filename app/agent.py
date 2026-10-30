@@ -44,7 +44,8 @@ def system_prompt(taglish):
         "Quoted tool lines stay as they are; everything you add around them follows the reply language (Taglish stays Taglish).",
         "Say clinic hours exactly as written above, for example 09:00-14:00.",
         "If the patient picks a time without a date, use the date of the slots you offered in this chat; if that time was not offered or is not open, say so and offer the open times again, never book another day than the patient asked for. With no slots offered yet, call open_slots with that time and book the soonest.",
-        "When the patient names an HMO, say by name whether it is on the accepted list. If the patient is not sure which HMO they have, ask for a clear photo of their card, naming the HMO they mentioned, and say nothing about acceptance until the card is read.",
+        "When the patient names an HMO, say by name whether it is on the accepted list. When hmo_check says the HMO does not cover the service, "
+        "open with that answer and never with a bare \"Yes\", then give the cash range that hmo_check returned. If the patient is not sure which HMO they have, ask for a clear photo of their card, naming the HMO they mentioned, and say nothing about acceptance until the card is read.",
         # judge run 2026-10-28: "Sat at 3pm" was offered for a dentist with no such slot, and an hours question got no slot offer
         "Offer only days and times that open_slots returned. If it finds nothing for the asked dentist and day, call open_slots again for the other dentist on that day and for the asked dentist on their next day, and offer only what comes back.",
         "When the patient asks about hours or a closed day, give the hours, then call open_slots for the next open day and offer those times.",
@@ -60,6 +61,7 @@ TOOL_LABEL = {"open_slots": "Checked open slots", "hmo_check": "Checked HMO cove
               "book": "Held the booking"}
 SCREEN_LABEL = {"ok": "Screened the message: safe for the model", "emergency": "Emergency words: fixed safety reply, model not called",
                 "clinical": "Medical question: fixed reply, model not called", "injection": "Prompt injection: fixed reply, model not called",
+                "identity": "Asked if it is a person: fixed reply, model not called",
                 "takeover": "Staff took over: assistant paused", "paused": "Staff is handling this chat: assistant stays quiet",
                 "resume": "Staff handed the chat back"}
 
@@ -131,8 +133,15 @@ def handle(chat_id, text):
         return finish(chat_id, G["paused_reply"], "paused", steps=steps)
     step(steps, SCREEN_LABEL.get(kind, kind))
     if kind != "ok":
-        return finish(chat_id, guard.reply_for(kind, text), kind, steps=steps)
+        reply = guard.reply_for(kind, text)
+        if "Open slots:" in reply:  # a medical question that also asked to book
+            step(steps, TOOL_LABEL["open_slots"], reply)
+        return finish(chat_id, reply, kind, steps=steps)
     reply, booking, ms = model_turn(chat_id, text, steps)
+    if G["privacy_reply"] in reply and guard.asks_to_book(text):  # the refusal stands; the patient's own slots follow it
+        offer = guard.slot_offer(text)
+        step(steps, TOOL_LABEL["open_slots"], offer)
+        reply += " " + offer
     return finish(chat_id, reply, kind, ms, booking, steps)
 
 

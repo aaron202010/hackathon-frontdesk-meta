@@ -197,7 +197,7 @@
   }
   document.getElementById("panelBtn").addEventListener("click", () => document.getElementById("panel").classList.toggle("open"));
   const SCREEN_NOTE = { clinical: "Medical question: the model was not called", emergency: "Emergency words: clinic phone first",
-    injection: "Rule change attempt: fixed reply", takeover: "Staff took over this chat", paused: "Staff is handling this chat",
+    injection: "Rule change attempt: fixed reply", identity: "Asked if it is a person: fixed reply", takeover: "Staff took over this chat", paused: "Staff is handling this chat",
     resume: "Assistant is back on this chat" };
   async function send(text, quiet) {
     if (!quiet) add(text, "me");

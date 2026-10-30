@@ -187,7 +187,9 @@ def hmo_check(name_or_alias, service_id=None):
     covers = ", ".join(service(c)["name"] for c in h["covers"] if service(c))
     note = f" Note: {h['note']}." if h["note"] else ""
     if s:
-        status = f"{h['insurer']} is accepted and covers {s['name']}." if covered else f"{h['insurer']} is accepted but does not cover {s['name']}; that one is cash."
+        status = (f"{h['insurer']} is accepted and covers {s['name']}." if covered else
+                  f"{h['insurer']} is accepted but does not cover {s['name']}; that one is cash, starting range "
+                  f"{peso(s['price_min'])} to {peso(s['price_max'])}. The dentist confirms the final fee after the check up.")
     else:
         status = f"{h['insurer']} is accepted."
     return {"accepted": True, "insurer": h["insurer"], "covered": covered, "note": h["note"],
